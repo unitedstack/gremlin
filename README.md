@@ -37,6 +37,6 @@ This can design a broad set of fault drill cases if combined with these two dime
 The test cases of system level and service level can be automated, but part of physical
 level test cases should be operated by human.
 
-To learn more about gremlin:
+## More
 
 * Documentation: https://docs.openstack.org/gremlin
