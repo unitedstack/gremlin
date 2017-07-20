@@ -1,0 +1,13 @@
+# High level host groups
+[control]
+[network]
+[compute]
+[storage]
+
+
+# Seperated hosts
+[api_hosts]
+[db_hosts]
+[mq_hosts]
+[mc_hosts]
+[lb_hosts]
