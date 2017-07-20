@@ -15,7 +15,14 @@ DEFAULT_OPT_TAGS="untagged"
 : ${OPT_CONFIG:=$GREM_DIR/config.yml}
 
 
+install_deps () {
+    sudo yum -y install ansible git
+}
+
 usage () {
+    echo "Usage: $0 --install-deps"
+    echo "                      install quickstart package dependencies and exit"
+    echo ""
     echo "Usage: $0 [options]"
     echo ""
     echo "Basic options:"
@@ -45,6 +52,9 @@ usage () {
 
 while [ "x$1" != "x" ]; do
     case "$1" in
+        --install-deps|-i)
+            OPT_INSTALL_DEPS=1
+            ;;
         --ansible-debug|-v)
             OPT_DEBUG_ANSIBLE=1
             ;;
@@ -80,11 +90,12 @@ while [ "x$1" != "x" ]; do
 done
 
 
-if [ "$#" -lt 1 ]; then
-    echo "ERROR: You must specify a playbook." >&2
-    usage >&2
-    exit 2
+if [ "$OPT_INSTALL_DEPS" = 1 ]; then
+    echo "NOTICE: installing dependencies"
+    install_deps
+    exit $?
 fi
+
 
 if [ "$#" -gt 2 ]; then
     usage >&2
@@ -105,6 +116,7 @@ fi
 
 ansible-playbook -$VERBOSITY $OPT_PLAYBOOK \
     -e @$OPT_CONFIG \
+    -e local_working_dir=$OPT_WORKDIR \
     ${OPT_TAGS:+-t $OPT_TAGS} \
     ${OPT_SKIP_TAGS:+--skip-tags $OPT_SKIP_TAGS}
 

@@ -1,0 +1,25 @@
+# Create a non-root user on the target host.  This is the user that
+# will execute fault drill test cases on the target host.
+- name: Create non-root group
+  group:
+    name: "{{ non_root_group }}"
+    state: present
+
+- name: Create non-root user
+  user:
+    name: "{{ non_root_user }}"
+    group: "{{ non_root_group }}"
+    state: present
+    shell: /bin/bash
+  become: true
+
+# I'm not always root, but when I am it's because of `sudo`.
+- name: Grant sudo privileges to non-root user
+  copy:
+    content: |
+      {{ non_root_user }} ALL=(ALL) NOPASSWD:ALL
+    dest: /etc/sudoers.d/{{ non_root_user }}
+    owner: root
+    group: root
+    mode: 0440
+  become: true

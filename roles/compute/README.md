@@ -1,6 +1,6 @@
 # Compute reliability verification and fault drill role
 
-We design test cases from the following two level:
+We design test cases from the following two levels:
 
 ## System Level
 

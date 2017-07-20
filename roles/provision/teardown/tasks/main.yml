@@ -1,0 +1,42 @@
+# Check that the non-root user exists.
+- name: Get UID of non-root user
+  command: >
+    id -u {{ non_root_user }}
+  register: non_root_uid
+  ignore_errors: true
+  changed_when: false
+
+# If the non-root user exists, perform a variety of cleanup tasks.
+- when: non_root_uid|success
+  block:
+    # Look for and kill any processes owned by the non-root user.
+    # This will let us remove the user later on.
+    - name: Check for processes owned by non-root user
+      command: >
+        pgrep -u {{ non_root_user }}
+      register: proc_exist
+      ignore_errors: true
+      become: true
+
+    - name: Kill (SIGTERM) all processes owned by non-root user
+      command: >
+        pkill -u {{ non_root_user }}
+      ignore_errors: true
+      become: true
+      when: proc_exist|success
+
+    - name: Kill (SIGKILL) all processes owned by non-root user
+      command: >
+        pkill -9 -u {{ non_root_user }}
+      when: proc_exist|success
+      ignore_errors: true
+      become: true
+
+    # Now that we have taken care of any processes owned by this user
+    # account we can delete it.
+    - name: Remove non-root user account
+      user:
+        name: "{{ non_root_user }}"
+        state: absent
+        remove: true
+      become: true

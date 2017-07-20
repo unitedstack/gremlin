@@ -1,0 +1,11 @@
+---
+  - name: Install stress-ng
+    package:
+      name: stress-ng
+      state: present
+    become: true
+    when: manage_packages|default(false)
+
+  - name: Stress CPU
+    shell: stress-ng --cpu {{ cpu_stress_workers }} --cpu-load {{ cpu_stress_load }} --timeout {{ cpu_stress_timeout }}
+    become: true
