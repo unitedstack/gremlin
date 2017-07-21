@@ -1,23 +1,34 @@
-# Create non-root user on storage nodes
+- name: Create local working dir
+  hosts: localhost
+  roles:
+    - provision/local
+  tags:
+    - provision
+
+- name: Random select a storage host
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - set_fact:
+        random_host: "{{ groups['storage'] | random }}"
+
 - name: Create non root user on storage nodes
-  hosts: "{{ groups['storage']|random }}"
+  hosts: "{{ random_host }}"
   roles:
     - provision/user
   tags:
     - provision
 
-
-# Run fault drills on storage nodes
 - name: Run fault drills on storage nodes in the system level
-  hosts: "{{ groups['storage']|random }}"
+  hosts: "{{ random_host }}"
   roles:
     - storage/system
-
 
 # Finally, we conditionally remove basic setup (users,
 # groups, directories)to start from scratch
 - name: Tear down non-root user on storage hosts
-  hosts: "{{ groups['storage']|random }}"
+  hosts: "{{ random_host }}"
   roles:
     - provision/teardown
   tags:

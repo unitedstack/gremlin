@@ -4,4 +4,4 @@
       name: utils
       tasks_from: cpu_load
       vars:
-        cpu_stress_load: 80%
+        cpu_stress_load: "80%"

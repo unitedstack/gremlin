@@ -1,0 +1,28 @@
+# Create local working dir
+
+- name: Get current user group for localhost
+  command: "id -gn"
+  register: local_user_group
+  changed_when: false
+
+- name: Register fact for current user group
+  set_fact:
+    current_group_local: "{{ local_user_group.stdout }}"
+  tags:
+    - provision
+
+- block:
+  - name: Ensure local working dir exists
+    file:
+      path: "{{ local_working_dir }}"
+      state: directory
+      owner: "{{ ansible_env.USER }}"
+      group: "{{ current_group_local }}"
+    become: true
+  rescue:
+  - name: Ensure local working dir exists
+    file:
+      path: "{{ local_working_dir }}"
+      state: directory
+      owner: "{{ ansible_env.USER }}"
+      group: "{{ current_group_local }}"

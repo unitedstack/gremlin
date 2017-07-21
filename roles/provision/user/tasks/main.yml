@@ -2,6 +2,13 @@
 # host.  Note that this tasks runs on the ansible control host
 # (because of the `delegate_to: localhost`), and we will later copy
 # the public key to the appropriate location.
+
+- name: Check if the host key exists
+  delegate_to: localhost
+  stat:
+    path: "{{ gremlin_key }}"
+  register: gremlin_key
+
 - name: Create target host access key
   delegate_to: localhost
   command: >
@@ -10,6 +17,7 @@
     -t rsa -b 4096
   args:
     creates: "{{ gremlin_key }}"
+  when: not gremlin_key.stat.exists
 
 # Create a non-root user on the target host.  This is the user that
 # will execute fault drill test cases on the target host.
