@@ -16,6 +16,9 @@ DEFAULT_OPT_TAGS="untagged"
 
 
 install_deps () {
+    sudo yum -y install epel-release
+    sudo yum clean all
+    sudo yum makecache
     sudo yum -y install ansible git
 }
 
@@ -55,12 +58,16 @@ while [ "x$1" != "x" ]; do
         --install-deps|-i)
             OPT_INSTALL_DEPS=1
             ;;
-        --ansible-debug|-v)
-            OPT_DEBUG_ANSIBLE=1
+        --playbook|-p)
+            OPT_PLAYBOOK=$2
+            shift
             ;;
         --config|-c)
             OPT_CONFIG=$2
             shift
+            ;;
+        --ansible-debug|-v)
+            OPT_DEBUG_ANSIBLE=1
             ;;
         --tags|-t)
             OPT_TAGS=$2
