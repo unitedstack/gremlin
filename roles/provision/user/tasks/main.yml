@@ -1,3 +1,16 @@
+# Create `gremlin_key`, which we will use to log in to the target
+# host.  Note that this tasks runs on the ansible control host
+# (because of the `delegate_to: localhost`), and we will later copy
+# the public key to the appropriate location.
+- name: Create target host access key
+  delegate_to: localhost
+  command: >
+    ssh-keygen -f {{ gremlin_key }} -N ''
+    -C 'ansible_generated_key'
+    -t rsa -b 4096
+  args:
+    creates: "{{ gremlin_key }}"
+
 # Create a non-root user on the target host.  This is the user that
 # will execute fault drill test cases on the target host.
 - name: Create non-root group
@@ -11,6 +24,16 @@
     group: "{{ non_root_group }}"
     state: present
     shell: /bin/bash
+  become: true
+
+# Install the public component of `gremlin_key` in the
+# `.ssh/authorized_keys` file for the non-root user.
+- name: Configure non-root user authorized_keys
+  authorized_key:
+    user: "{{ non_root_user }}"
+    key: "{{ item }}"
+  with_file:
+    - "{{ gremlin_key }}.pub"
   become: true
 
 # I'm not always root, but when I am it's because of `sudo`.

@@ -1,0 +1,4 @@
+---
+cpu_stress_timeout: "5m"
+cpu_stress_workers: 0
+cpu_stress_load: "50%"

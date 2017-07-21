@@ -1,0 +1,24 @@
+# Create non-root user on storage nodes
+- name: Create non root user on storage nodes
+  hosts: "{{ groups['storage']|random }}"
+  roles:
+    - provision/user
+  tags:
+    - provision
+
+
+# Run fault drills on storage nodes
+- name: Run fault drills on storage nodes in the system level
+  hosts: "{{ groups['storage']|random }}"
+  roles:
+    - storage/system
+
+
+# Finally, we conditionally remove basic setup (users,
+# groups, directories)to start from scratch
+- name: Tear down non-root user on storage hosts
+  hosts: "{{ groups['storage']|random }}"
+  roles:
+    - provision/teardown
+  tags:
+    - teardown-provision
