@@ -13,23 +13,7 @@
     - set_fact:
         random_host: "{{ groups['storage'] | random }}"
 
-- name: Create non root user on storage nodes
-  hosts: "{{ hostvars['localhost']['random_host'] }}"
-  roles:
-    - provision/user
-  tags:
-    - provision
-
 - name: Run fault drills on storage nodes in the system level
   hosts: "{{ hostvars['localhost']['random_host'] }}"
   roles:
     - storage/system
-
-# Finally, we conditionally remove basic setup (users,
-# groups, directories)to start from scratch
-- name: Tear down non-root user on storage hosts
-  hosts: "{{ hostvars['localhost']['random_host'] }}"
-  roles:
-    - provision/teardown
-  tags:
-    - teardown-provision
