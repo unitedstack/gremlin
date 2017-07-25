@@ -7,7 +7,7 @@
   delegate_to: localhost
   stat:
     path: "{{ gremlin_key }}"
-  register: gremlin_key
+  register: gremlin_key_stat
 
 - name: Create target host access key
   delegate_to: localhost
@@ -17,7 +17,7 @@
     -t rsa -b 4096
   args:
     creates: "{{ gremlin_key }}"
-  when: not gremlin_key.stat.exists
+  when: not gremlin_key_stat.stat.exists
 
 # Create a non-root user on the target host.  This is the user that
 # will execute fault drill test cases on the target host.

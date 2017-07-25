@@ -1,7 +1,6 @@
----
-  - name: Stress CPU load to 80% for 5 minutes
-    include_role:
-      name: utils
-      tasks_from: cpu_load
-      vars:
-        cpu_stress_load: "80%"
+- name: Stress CPU load to 80% for 5 minutes
+  include_role:
+    name: utils
+    tasks_from: cpu_load
+  vars:
+    cpu_stress_load: "80%"
