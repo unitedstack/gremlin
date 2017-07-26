@@ -6,7 +6,7 @@
 LANG=C
 
 GREM_DIR=$(dirname $( readlink -f "${BASH_SOURCE[0]}" ))
-DEFAULT_OPT_TAGS="untagged"
+DEFAULT_OPT_TAGS="untagged,verification,fault"
 
 
 : ${OPT_TAGS:=$DEFAULT_OPT_TAGS}
@@ -35,6 +35,11 @@ usage () {
     echo "                      specify the config file that contains the node"
     echo "                      configuration, can be used only once"
     echo "                      (default=$OPT_CONFIG)"
+    echo "  -s, --step"
+    echo "                      Execute playbooks or tasks step by step"
+    echo "  --syntax-check"
+    echo "                      perform a syntax check on the playbook, but do not"
+    echo "                      execute it"
     echo ""
     echo "Advanced options:"
     echo "  -v, --ansible-debug"
@@ -52,6 +57,7 @@ usage () {
     echo "  -h, --help          print this help and exit"
 }
 
+OPT_VARS=()
 
 while [ "x$1" != "x" ]; do
     case "$1" in
@@ -62,9 +68,20 @@ while [ "x$1" != "x" ]; do
             OPT_PLAYBOOK=$2
             shift
             ;;
+        --extra-vars|-e)
+            OPT_VARS+=("-e")
+            OPT_VARS+=("$2")
+            shift
+            ;;
         --config|-c)
             OPT_CONFIG=$2
             shift
+            ;;
+        --step|-s)
+            OPT_STEP=1
+            ;;
+        --syntax-check)
+            OPT_SYNTAX_CHECK=1
             ;;
         --ansible-debug|-v)
             OPT_DEBUG_ANSIBLE=1
@@ -124,7 +141,10 @@ fi
 ansible-playbook -$VERBOSITY $OPT_PLAYBOOK \
     -e @$OPT_CONFIG \
     -e local_working_dir=$OPT_WORKDIR \
+    ${OPT_VARS[@]} \
     ${OPT_TAGS:+-t $OPT_TAGS} \
-    ${OPT_SKIP_TAGS:+--skip-tags $OPT_SKIP_TAGS}
+    ${OPT_SKIP_TAGS:+--skip-tags $OPT_SKIP_TAGS} \
+    ${OPT_STEP:+--step} \
+    ${OPT_SYNTAX_CHECK:+--syntax-check}
 
 set +x

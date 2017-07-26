@@ -1,0 +1,4 @@
+install:
+  - sudo apt-get install -qq ansible
+script:
+  - ./drill.sh -p playbooks/drill_storage.yaml -t all --syntax-check

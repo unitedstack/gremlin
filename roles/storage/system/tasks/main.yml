@@ -4,3 +4,5 @@
     tasks_from: cpu_load
   vars:
     cpu_stress_load: "80%"
+  tags:
+    - verification
