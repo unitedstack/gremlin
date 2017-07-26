@@ -31,6 +31,9 @@ usage () {
     echo "Basic options:"
     echo "  -p, --playbook <file>"
     echo "                      playbook to run(default=$OPT_PLAYBOOK)"
+    echo "  -i, --inventory <file>"
+    echo "                      specify inventory host path"
+    echo "                      (default=/etc/ansible/hosts) or comma separated host list"
     echo "  -c, --config <file>"
     echo "                      specify the config file that contains the node"
     echo "                      configuration, can be used only once"
@@ -61,8 +64,12 @@ OPT_VARS=()
 
 while [ "x$1" != "x" ]; do
     case "$1" in
-        --install-deps|-i)
+        --install-deps)
             OPT_INSTALL_DEPS=1
+            ;;
+        --inventory|-i)
+            OPT_INVENTORY=$2
+            shift
             ;;
         --playbook|-p)
             OPT_PLAYBOOK=$2
@@ -142,6 +149,7 @@ ansible-playbook -$VERBOSITY $OPT_PLAYBOOK \
     -e @$OPT_CONFIG \
     -e local_working_dir=$OPT_WORKDIR \
     ${OPT_VARS[@]} \
+    ${OPT_INVENTORY:+-i $OPT_INVENTORY} \
     ${OPT_TAGS:+-t $OPT_TAGS} \
     ${OPT_SKIP_TAGS:+--skip-tags $OPT_SKIP_TAGS} \
     ${OPT_STEP:+--step} \

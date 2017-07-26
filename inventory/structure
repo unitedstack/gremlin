@@ -1,0 +1,53 @@
+# ------------------------------------------
+# # High-level hostgroups
+# #
+# # Add hosts to these groups (ideally by creating an additional inventory
+# # file in the inventory directory, rather than editing this file) to
+# # set up typical groups of services.
+
+myip ansible_connection=local ansible_become=true
+
+# Node role
+[api]
+myip
+
+[db]
+myip
+
+[mq]
+myip
+
+[mc]
+myip
+
+[lb]
+myip
+
+[mon]
+myip
+
+[osd]
+myip
+
+[rgw]
+myip
+
+
+# Node role group
+[control:children]
+api
+db
+mq
+mc
+lb
+
+[network]
+myip
+
+[compute]
+myip
+
+[storage:children]
+mon
+osd
+rgw
