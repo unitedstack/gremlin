@@ -1,5 +1,7 @@
 # Gremlin
 
+[![Build Status](https://travis-ci.org/unitedstack/gremlin.svg?branch=master)](https://travis-ci.org/unitedstack/gremlin)
+
 OpenStack reliability verification and fault drill system
 
 ## Background
