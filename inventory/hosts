@@ -2,7 +2,11 @@
 [control]
 [network]
 [compute]
-[storage]
+
+[storage:children]
+mon
+osd
+rgw
 
 
 # Seperated hosts
@@ -11,4 +15,10 @@
 [mq]
 [mc]
 [lb]
+
+# for storage role
 [mon]
+
+[osd]
+
+[rgw]

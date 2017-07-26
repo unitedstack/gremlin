@@ -1,30 +1,43 @@
-- name: Create local working dir
-  hosts: localhost
-  roles:
-    - provision/local
-  tags:
-    - provision
-
-- name: Random select a storage host
+- name: Preparing for storage node test
   hosts: localhost
   connection: local
   gather_facts: false
   tasks:
-    - set_fact:
-        random_host: "{{ groups['storage'] | random }}"
-        random_mon_host: "{{ groups['mon'] | shuffle }}"
-  tags:
-    - always
+    - name: Random select a storage host
+      add_host:
+        groups: random_storage_host
+        name: "{{ groups['storage'] | random }}"
+      tags:
+        - storage-cpu
 
-- name: Run fault drills on storage nodes in the system level
-  hosts: "{{ hostvars['localhost']['random_host'] }}"
+    - pause:
+        prompt: "Please input the number of ceph-mon will be killed:"
+      register: input_ceph_mon_down_num
+      tags:
+        - ceph-mon
+
+    - name: Random select some monitor nodes
+      add_host:
+        groups: random_mon_group
+        name: "{{ item }}"
+      vars:
+        - shuffle_mon_hosts: "{{ groups['mon'] | shuffle }}"
+          ceph_mon_down_num: "{{ input_ceph_mon_down_num.user_input|int }}"
+      with_items:
+        - "{{ shuffle_mon_hosts[:ceph_mon_down_num|int] }}"
+      tags:
+        - ceph-mon
+
+- name: "CASE: Storage - CPU Press"
+  hosts: random_storage_host
   roles:
     - storage/system
   tags:
-    - storage-system
+    - storage-cpu
 
-- name: Run fault drills on ceph-mon nodes in the service level
-  hosts: "{{ hostvars['localhost']['random_mon_host'][:ceph_mon_down_num] }}"
+- name: "CASE: Storage - Ceph monitor DOWN"
+  hosts: random_mon_group
+  gather_facts: true
   tasks:
     - include_role:
         name: storage/service
