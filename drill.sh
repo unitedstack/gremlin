@@ -33,7 +33,7 @@ usage () {
     echo "                      playbook to run(default=$OPT_PLAYBOOK)"
     echo "  -i, --inventory <file>"
     echo "                      specify inventory host path"
-    echo "                      (default=/etc/ansible/hosts) or comma separated host list"
+    echo "                      (default=./inventory/hosts) or comma separated host list"
     echo "  -c, --config <file>"
     echo "                      specify the config file that contains the node"
     echo "                      configuration, can be used only once"
@@ -137,7 +137,7 @@ fi
 set -ex
 
 export ANSIBLE_CONFIG=$GREM_DIR/ansible.cfg
-#export ANSIBLE_INVENTORY=$GREM_DIR/inventory/hosts
+export ANSIBLE_INVENTORY=$GREM_DIR/inventory/hosts
 
 if [ "$OPT_DEBUG_ANSIBLE" = 1 ]; then
     VERBOSITY=vvvv

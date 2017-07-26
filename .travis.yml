@@ -6,4 +6,4 @@ install:
   - sudo apt-get install -qq ansible
 
 script:
-    - ./drill.sh -p playbooks/drill_storage.yaml -i inventory/structure -t all --syntax-check
+    - bash drill.sh -p playbooks/drill_storage.yaml -i inventory/structure -t all --syntax-check
