@@ -6,4 +6,7 @@ install:
   - sudo pip install ansible
 
 script:
-    - ./drill.sh -p playbooks/drill_storage.yaml -i inventory/structure -t all --syntax-check
+  - ./drill.sh -p playbooks/drill_storage.yaml -i inventory/structure -t all --syntax-check
+
+notifications:
+  email: false
