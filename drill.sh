@@ -137,7 +137,7 @@ fi
 set -ex
 
 export ANSIBLE_CONFIG=$GREM_DIR/ansible.cfg
-export ANSIBLE_INVENTORY=$GREM_DIR/inventory/hosts
+#export ANSIBLE_INVENTORY=$GREM_DIR/inventory/hosts
 
 if [ "$OPT_DEBUG_ANSIBLE" = 1 ]; then
     VERBOSITY=vvvv
