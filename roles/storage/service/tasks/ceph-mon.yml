@@ -1,0 +1,23 @@
+- name: pkill Ceph monitor daemon
+  command: "pkill ceph-mon"
+  become: true
+
+- block:
+   - shell: "ps -ef | grep ceph-mon"
+     register: ps_result
+
+   - fail:
+       msg: "Failed to kill Ceph monitor daemon"
+     when: "'/usr/bin/ceph-mon' in ps_result.stdout"
+
+- pause:
+    seconds: "{{ ceph_mon_downtime }}"
+
+- block:
+   - shell: "/etc/init.d/ceph start mon"
+     become: true
+  rescue:
+   - service:
+       name: "ceph-mon@{{ ansible_hostname }}"
+       state: started
+     become: true

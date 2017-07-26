@@ -12,8 +12,22 @@
   tasks:
     - set_fact:
         random_host: "{{ groups['storage'] | random }}"
+        random_mon_host: "{{ groups['mon'] | shuffle }}"
+  tags:
+    - always
 
 - name: Run fault drills on storage nodes in the system level
   hosts: "{{ hostvars['localhost']['random_host'] }}"
   roles:
     - storage/system
+  tags:
+    - storage-system
+
+- name: Run fault drills on ceph-mon nodes in the service level
+  hosts: "{{ hostvars['localhost']['random_mon_host'][:ceph_mon_down_num] }}"
+  tasks:
+    - include_role:
+        name: storage/service
+        tasks_from: ceph-mon
+  tags:
+    - ceph-mon

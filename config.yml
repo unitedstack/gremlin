@@ -1,3 +1,4 @@
 manage_packages: true
 non_root_user: gremlin
 non_root_group: gremlin
+ceph_mon_down_num: 1
