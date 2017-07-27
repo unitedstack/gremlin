@@ -1,0 +1,65 @@
+- name: Preparing for mon node tests
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Random select one mon host
+      add_host:
+        groups: random_one_mon_host
+        name: "{{ groups['mon'] | random }}"
+      vars:
+        - mon_group_num: "{{ groups['mon'] | length }}"
+      when:
+        - mon_group_num | int >= 1
+
+    - name: Random select two mon hosts
+      add_host:
+        groups: random_two_mon_hosts
+        name: "{{ item }}"
+      vars:
+        - shuffle_mon_hosts: "{{ groups['mon'] | shuffle }}"
+        - mon_group_num: "{{ groups['mon'] | length }}"
+      with_items:
+        - "{{ shuffle_mon_hosts[:2] }}"
+      when:
+        - mon_group_num | int >= 2
+
+    - name: Random select three mon hosts
+      add_host:
+        groups: random_three_mon_hosts
+        name: "{{ item }}"
+      vars:
+        - shuffle_mon_hosts: "{{ groups['mon'] | shuffle }}"
+        - mon_group_num: "{{ groups['mon'] | length }}"
+      with_items:
+        - "{{ shuffle_mon_hosts[:3] }}"
+      when:
+        - mon_group_num | int >= 3
+
+
+- include: mon/cpu_load.yml
+  vars:
+    cpu_stress_load: "80%"
+    random_hosts: random_one_mon_host
+
+- include: mon/cpu_load.yml
+  vars:
+    cpu_stress_load: "90%"
+    random_hosts: random_one_mon_host
+
+- include: mon/cpu_load.yml
+  vars:
+    cpu_stress_load: "100%"
+    random_hosts: random_one_mon_host
+
+- include: mon/kill_mon.yml
+  vars:
+    random_hosts: random_one_mon_host
+
+- include: mon/kill_mon.yml
+  vars:
+    random_hosts: random_two_mon_hosts
+
+- include: mon/kill_mon.yml
+  vars:
+    random_hosts: random_three_mon_hosts

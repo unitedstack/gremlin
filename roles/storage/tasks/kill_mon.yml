@@ -1,0 +1,17 @@
+- block:
+   - name: Kill Ceph monitor daemon
+     command: "pkill ceph-mon"
+     become: true
+
+   - name: Check if ceph monitor was killed
+     shell: "ps -ef | grep ceph-mon"
+     register: ps_result
+
+   - fail:
+       msg: "Failed to kill Ceph monitor daemon"
+     when: "'/usr/bin/ceph-mon' in ps_result.stdout"
+
+  always:
+   - name: Waiting 10 seconds to warm down
+     pause:
+       seconds: 10

@@ -1,0 +1,21 @@
+# This playbook will do cpu stress load on monitor node
+
+- name: "CASE: [Storage][Mon] - Stress CPU load to {{ cpu_stress_load }} for {{ cpu_stress_timeout }} minutes"
+  hosts: "{{ random_hosts }}"
+  gather_facts: true
+  tasks:
+    - include_role:
+        name: system
+        tasks_from: cpu_load
+  tags:
+    - mon-cpu
+
+- name: Will execute the next drill test case?
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - pause:
+      when:
+        - mode == "manual"
+  tags:
+    - mon-cpu

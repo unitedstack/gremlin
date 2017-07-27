@@ -1,0 +1,52 @@
+# This playbook will do mon kill drill test case, and if in manual
+# mode, it will prompt to ask if you want to recover it.
+
+- name: "CASE: [Storage][Mon] - Ceph {{ random_hosts }} Monitor DOWN"
+  hosts: "{{ random_hosts }}"
+  gather_facts: true
+  tasks:
+    - include_role:
+        name: storage
+        tasks_from: kill_mon
+  tags:
+    - mon-down
+
+- name: Ask if recover this fault when in manual mode
+  hosts: localhost
+  tasks:
+    - set_fact:
+        recovery: "no"
+    - block:
+        - pause:
+            prompt: "Will recover this fault? (y|yes, n|no)"
+          register: _recovery
+        - set_fact:
+            recovery: "{{ _recovery.user_input }}"
+      when:
+        - mode == "manual"
+  tags:
+    - mon-down
+
+- name: Recover fault
+  hosts: "{{ random_hosts }}"
+  gather_facts: true
+  tasks:
+    - block:
+        - include_role:
+            name: storage
+            tasks_from: start_mon
+      vars:
+        - recovery: "{{ hostvars['localhost']['recovery'] }}"
+      when: mode == "auto" or recovery == "y" or recovery == "yes"
+  tags:
+    - mon-down
+
+- name: Will execute the next case?
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - pause:
+      when:
+        - mode == "manual"
+  tags:
+    - mon-down

@@ -1,0 +1,18 @@
+- block:
+   - name: "Reset failed ceph monitor status "
+     shell: "systemctl reset-failed ceph-mon@{{ ansible_hostname }}"
+
+   - name: "[Recovery] Start Ceph Mon"
+     service:
+       name: "ceph-mon@{{ ansible_hostname }}"
+       state: started
+     become: true
+
+  rescue:
+   - shell: "/etc/init.d/ceph start mon"
+     become: true
+
+  always:
+   - name: Waiting 10 seconds to warm up
+     pause:
+       seconds: 10

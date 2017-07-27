@@ -6,13 +6,14 @@
 LANG=C
 
 GREM_DIR=$(dirname $( readlink -f "${BASH_SOURCE[0]}" ))
-DEFAULT_OPT_TAGS="untagged,verification,fault"
+DEFAULT_OPT_TAGS="untagged,verification,fault,recovery"
 
 
 : ${OPT_TAGS:=$DEFAULT_OPT_TAGS}
 : ${OPT_PLAYBOOK:=$GREM_DIR/playbooks/drill.yml}
 : ${OPT_WORKDIR:=$GREM_DIR/.gremlin}
 : ${OPT_CONFIG:=$GREM_DIR/config.yml}
+: ${OPT_MODE:=auto}
 
 
 install_deps () {
@@ -38,8 +39,11 @@ usage () {
     echo "                      specify the config file that contains the node"
     echo "                      configuration, can be used only once"
     echo "                      (default=$OPT_CONFIG)"
+    echo "  -m, --mode <mode>"
+    echo "                      specify mode to run, there are two modes: manual, auto"
+    echo "                      (default=$OPT_MODE)"
     echo "  -s, --step"
-    echo "                      Execute playbooks or tasks step by step"
+    echo "                      execute playbooks or tasks step by step"
     echo "  --syntax-check"
     echo "                      perform a syntax check on the playbook, but do not"
     echo "                      execute it"
@@ -82,6 +86,10 @@ while [ "x$1" != "x" ]; do
             ;;
         --config|-c)
             OPT_CONFIG=$2
+            shift
+            ;;
+        --mode|-m)
+            OPT_MODE=$2
             shift
             ;;
         --step|-s)
@@ -148,6 +156,7 @@ fi
 ansible-playbook -$VERBOSITY $OPT_PLAYBOOK \
     -e @$OPT_CONFIG \
     -e local_working_dir=$OPT_WORKDIR \
+    -e mode=$OPT_MODE \
     ${OPT_VARS[@]} \
     ${OPT_INVENTORY:+-i $OPT_INVENTORY} \
     ${OPT_TAGS:+-t $OPT_TAGS} \
