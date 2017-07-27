@@ -40,16 +40,19 @@
 - include: mon/cpu_load.yml
   vars:
     cpu_stress_load: "80%"
+    cpu_stress_timeout: "5m"
     random_hosts: random_one_mon_host
 
 - include: mon/cpu_load.yml
   vars:
     cpu_stress_load: "90%"
+    cpu_stress_timeout: "5m"
     random_hosts: random_one_mon_host
 
 - include: mon/cpu_load.yml
   vars:
     cpu_stress_load: "100%"
+    cpu_stress_timeout: "5m"
     random_hosts: random_one_mon_host
 
 - include: mon/kill_mon.yml

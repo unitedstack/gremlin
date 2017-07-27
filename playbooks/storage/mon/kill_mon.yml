@@ -1,7 +1,7 @@
 # This playbook will do mon kill drill test case, and if in manual
 # mode, it will prompt to ask if you want to recover it.
 
-- name: "CASE: [Storage][Mon] - Ceph {{ random_hosts }} Monitor DOWN"
+- name: "CASE: Storage - Ceph monitor down on {{ random_hosts }}"
   hosts: "{{ random_hosts }}"
   gather_facts: true
   tasks:
@@ -41,7 +41,7 @@
   tags:
     - mon-down
 
-- name: Will execute the next case?
+- name: Will execute the next test case?
   hosts: localhost
   gather_facts: false
   tasks:

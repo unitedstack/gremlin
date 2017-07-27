@@ -6,7 +6,7 @@
 LANG=C
 
 GREM_DIR=$(dirname $( readlink -f "${BASH_SOURCE[0]}" ))
-DEFAULT_OPT_TAGS="untagged,verification,fault,recovery"
+DEFAULT_OPT_TAGS="untagged"
 
 
 : ${OPT_TAGS:=$DEFAULT_OPT_TAGS}
@@ -51,6 +51,8 @@ usage () {
     echo "Advanced options:"
     echo "  -v, --ansible-debug"
     echo "                      invoke ansible-playbook with -vvvv"
+    echo "  -e, --extra-vars <key>=<value>"
+    echo "                      additional ansible variables, can be used multiple times"
     echo "  -t, --tags <tag1>[,<tag2>,...]"
     echo "                      only run plays and tasks tagged with these values,"
     echo "                      specify 'all' to run everything"
