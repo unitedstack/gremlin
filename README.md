@@ -53,50 +53,50 @@ There are two modes when running gremlin:
 Before running gremlin, ensure the host running gremlin can ssh to the target hosts
 without password.
 
-Now, following the steps below to getting started:
+Now, following the steps to get started:
 
 1. Get the code
 
-```
-git clone https://github.com/unitedstack/gremlin.git
-```
+  ```
+  git clone https://github.com/unitedstack/gremlin.git
+  ```
 
 2. Install dependencies
 
-```
-./drill.sh --install-deps
-```
+  ```
+  ./drill.sh --install-deps
+  ```
 
 3. Define your inventory
 
-You should define your inventory according your environments. Modify the
-inventory/hosts file.
+  You should define your inventory according your environments. Modify the
+  inventory/hosts file.
 
 4. Run your test cases
 
-4.1 Run all test cases automatically:
+  4.1 Run all test cases automatically:
 
-```
-./drill.sh -t all
-```
+  ```
+  ./drill.sh -t all
+  ```
 
-4.2 Run all test cases manually:
+  4.2 Run all test cases manually:
 
-```
-./drill.sh -t all --mode manual
-```
+  ```
+  ./drill.sh -t all --mode manual
+  ```
 
-4.3 Run ceph mon down test cases manually
+  4.3 Run ceph mon down test cases manually
 
-```
-./drill.sh -t untagged,mon-down --moduel manual
-```
+  ```
+  ./drill.sh -t untagged,mon-down --moduel manual
+  ```
 
 5. To get more help info
 
-```
-./drill.sh -h
-```
+  ```
+  ./drill.sh -h
+  ```
 
 ## More
 
