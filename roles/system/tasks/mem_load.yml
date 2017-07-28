@@ -1,0 +1,14 @@
+- name: Install stress-ng
+  package:
+    name: stress-ng
+    state: present
+  become: true
+  when: manage_packages|default(false)
+
+- name: Caculate stress vm_bytes
+  shell: awk '/MemAvailable/{printf "%d\n", $2 * {{ mem_stress_load[:-1] | int }} / 100;}' < /proc/meminfo
+  register: vm_bytes
+
+- name: stress memory
+  shell: stress-ng --vm 1 --vm-bytes {{ vm_bytes.stdout }}k --vm-keep --timeout {{ mem_stress_timeout }}
+  become: true
