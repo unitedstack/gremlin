@@ -1,0 +1,79 @@
+- name: Preparing for rgw node tests
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    rgw_group_num: "{{ groups['rgw'] | length }}"
+    shuffle_rgw_hosts: "{{ groups['rgw'] | shuffle }}"
+  tasks:
+    - name: Random select one rgw host
+      add_host:
+        groups: random_one_rgw_host
+        name: "{{ groups['rgw'] | random }}"
+      when:
+        - rgw_group_num | int >= 1
+
+    - name: Random select two rgw hosts
+      add_host:
+        groups: random_two_rgw_hosts
+        name: "{{ item }}"
+      with_items:
+        - "{{ shuffle_rgw_hosts[:2] }}"
+      when:
+        - rgw_group_num | int >= 2
+
+    - name: Random select three rgw hosts
+      add_host:
+        groups: random_three_rgw_hosts
+        name: "{{ item }}"
+      with_items:
+        - "{{ shuffle_rgw_hosts[:3] }}"
+      when:
+        - rgw_group_num | int >= 3
+
+
+## System Level
+#CPU
+- include: rgw/cpu_load.yml
+  vars:
+    cpu_stress_load: "80%"
+    cpu_stress_timeout: "5m"
+    random_hosts: random_one_rgw_host
+  tags:
+    - rgw-cpu
+
+- include: rgw/cpu_load.yml
+  vars:
+    cpu_stress_load: "90%"
+    cpu_stress_timeout: "5m"
+    random_hosts: random_one_rgw_host
+  tags:
+    - rgw-cpu
+
+- include: rgw/cpu_load.yml
+  vars:
+    cpu_stress_load: "100%"
+    cpu_stress_timeout: "5m"
+    random_hosts: random_one_rgw_host
+  tags:
+    - rgw-cpu
+
+
+## Service Level
+- include: rgw/kill_rgw.yml
+  vars:
+    random_hosts: random_one_rgw_host
+  tags:
+    - rgw-down
+
+- include: rgw/kill_rgw.yml
+  vars:
+    random_hosts: random_two_rgw_hosts
+  tags:
+    - rgw-down
+
+- include: rgw/kill_rgw.yml
+  vars:
+    random_hosts: random_three_rgw_hosts
+  tags:
+    - rgw-down

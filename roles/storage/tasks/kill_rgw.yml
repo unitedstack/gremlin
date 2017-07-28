@@ -1,0 +1,17 @@
+- block:
+   - name: Kill Ceph radosgw daemon
+     command: "pkill radosgw"
+     become: true
+
+   - name: Check if ceph radosgw was killed
+     shell: "ps -ef | grep radosgw"
+     register: ps_result
+
+   - fail:
+       msg: "Failed to kill Ceph radosgw daemon"
+     when: "'/usr/bin/radosgw' in ps_result.stdout"
+
+  always:
+   - name: Waiting 10 seconds to warm down
+     pause:
+       seconds: 10

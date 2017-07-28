@@ -1,0 +1,18 @@
+- block:
+   - name: "Reset failed ceph radosgw status "
+     shell: "systemctl reset-failed ceph-radosgw@rgw.{{ ansible_hostname }}"
+
+   - name: "Start Ceph RGW"
+     service:
+       name: "ceph-radosgw@rgw.{{ ansible_hostname }}"
+       state: started
+     become: true
+
+  rescue:
+   - shell: "/etc/init.d/ceph-radosgw start"
+     become: true
+
+  always:
+   - name: Waiting 10 seconds to warm up
+     pause:
+       seconds: 10
