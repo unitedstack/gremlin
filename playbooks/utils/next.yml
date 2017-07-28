@@ -1,0 +1,7 @@
+- name: Will execute the next test case?
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - pause:
+      when:
+        - mode == "manual"

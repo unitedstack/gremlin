@@ -11,19 +11,7 @@
   tags:
     - mon-down
 
-- name: Ask if recover this fault when in manual mode
-  hosts: localhost
-  tasks:
-    - set_fact:
-        recovery: "no"
-    - block:
-        - pause:
-            prompt: "Will recover this fault? (y|yes, n|no)"
-          register: _recovery
-        - set_fact:
-            recovery: "{{ _recovery.user_input }}"
-      when:
-        - mode == "manual"
+- include: ../../utils/ask.yml
   tags:
     - mon-down
 
@@ -41,12 +29,6 @@
   tags:
     - mon-down
 
-- name: Will execute the next test case?
-  hosts: localhost
-  gather_facts: false
-  tasks:
-    - pause:
-      when:
-        - mode == "manual"
+- include: ../../utils/next.yml
   tags:
     - mon-down

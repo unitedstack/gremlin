@@ -2,7 +2,7 @@
    - name: "Reset failed ceph monitor status "
      shell: "systemctl reset-failed ceph-mon@{{ ansible_hostname }}"
 
-   - name: "[Recovery] Start Ceph Mon"
+   - name: "Start Ceph Mon"
      service:
        name: "ceph-mon@{{ ansible_hostname }}"
        state: started

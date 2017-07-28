@@ -37,6 +37,8 @@
         - mon_group_num | int >= 3
 
 
+## System Level
+#CPU
 - include: mon/cpu_load.yml
   vars:
     cpu_stress_load: "80%"
@@ -55,6 +57,8 @@
     cpu_stress_timeout: "5m"
     random_hosts: random_one_mon_host
 
+
+## Service Level
 - include: mon/kill_mon.yml
   vars:
     random_hosts: random_one_mon_host

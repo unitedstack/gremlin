@@ -10,12 +10,6 @@
   tags:
     - mon-cpu
 
-- name: Will execute the next test case?
-  hosts: localhost
-  gather_facts: false
-  tasks:
-    - pause:
-      when:
-        - mode == "manual"
+- include: ../../utils/next.yml
   tags:
     - mon-cpu
