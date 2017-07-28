@@ -39,6 +39,65 @@ This can design a broad set of fault drill cases if combined with these two dime
 The test cases of system level and service level can be automated, but part of physical
 level test cases should be operated by human.
 
+
+## Usage
+
+There are two modes when running gremlin:
+
+* auto: All test cases will run automatically. It will introduce fault and recover
+        this fault automatically. The default mode is auto.
+* manual: Will run in interactive mode, when every test case is done, will prompt
+          to ask if to execute the next one. And after introduced a fault, it will
+          ask if to recover this fault automatically.
+
+Before running gremlin, ensure the host running gremlin can ssh to the target hosts
+without password.
+
+Now, following the steps below to getting started:
+
+1. Get the code
+
+```
+git clone https://github.com/unitedstack/gremlin.git
+```
+
+2. Install dependencies
+
+```
+./drill.sh --install-deps
+```
+
+3. Define your inventory
+
+You should define your inventory according your environments. Modify the
+inventory/hosts file.
+
+4. Run your test cases
+
+4.1 Run all test cases automatically:
+
+```
+./drill.sh -t all
+```
+
+4.2 Run all test cases manually:
+
+```
+./drill.sh -t all --mode manual
+```
+
+4.3 Run ceph mon down test cases manually
+
+```
+./drill.sh -t untagged,mon-down --moduel manual
+```
+
+5. To get more help info
+
+```
+./drill.sh -h
+```
+
 ## More
 
 * Documentation: https://docs.openstack.org/gremlin
