@@ -1,6 +1,7 @@
 - block:
    - name: "Reset failed ceph radosgw status "
      shell: "systemctl reset-failed ceph-radosgw@rgw.{{ ansible_hostname }}"
+     become: true
 
    - name: "Start Ceph RGW"
      service:
