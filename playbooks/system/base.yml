@@ -1,0 +1,43 @@
+# CPU
+- include: cpu_load.yml
+  vars:
+    cpu_stress_load: "80%"
+    cpu_stress_timeout: "5m"
+  tags:
+    - "{{ node_group }}-cpu"
+
+- include: cpu_load.yml
+  vars:
+    cpu_stress_load: "90%"
+    cpu_stress_timeout: "5m"
+  tags:
+    - "{{ node_group }}-cpu"
+
+- include: cpu_load.yml
+  vars:
+    cpu_stress_load: "100%"
+    cpu_stress_timeout: "5m"
+  tags:
+    - "{{ node_group }}-cpu"
+
+# Memory
+- include: mem_load.yml
+  vars:
+    mem_stress_load: "80%"
+    mem_stress_timeout: "5m"
+  tags:
+    - "{{ node_group }}-mem"
+
+- include: mem_load.yml
+  vars:
+    mem_stress_load: "90%"
+    mem_stress_timeout: "5m"
+  tags:
+    - "{{ node_group }}-mem"
+
+- include: mem_load.yml
+  vars:
+    mem_stress_load: "100%"
+    mem_stress_timeout: "5m"
+  tags:
+    - "{{ node_group }}-mem"

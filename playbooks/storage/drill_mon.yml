@@ -38,54 +38,41 @@
 
 
 ## System Level
-# CPU
-- include: mon/cpu_load.yml
-  vars:
-    cpu_stress_load: "80%"
-    cpu_stress_timeout: "5m"
-    random_hosts: random_one_mon_host
 
-- include: mon/cpu_load.yml
+- include: ../system/base.yml
   vars:
-    cpu_stress_load: "90%"
-    cpu_stress_timeout: "5m"
     random_hosts: random_one_mon_host
-
-- include: mon/cpu_load.yml
-  vars:
-    cpu_stress_load: "100%"
-    cpu_stress_timeout: "5m"
-    random_hosts: random_one_mon_host
-
-# Memory
-- include: mon/mem_load.yml
-  vars:
-    mem_stress_load: "80%"
-    mem_stress_timeout: "5m"
-    random_hosts: random_one_mon_host
-
-- include: mon/mem_load.yml
-  vars:
-    mem_stress_load: "90%"
-    mem_stress_timeout: "5m"
-    random_hosts: random_one_mon_host
-
-- include: mon/mem_load.yml
-  vars:
-    mem_stress_load: "100%"
-    mem_stress_timeout: "5m"
-    random_hosts: random_one_mon_host
+    node_group: mon
+  tags:
+    - system
+    - mon
+    - mon-system
 
 
 ## Service Level
 - include: mon/kill_mon.yml
   vars:
     random_hosts: random_one_mon_host
+  tags:
+    - service
+    - mon
+    - mon-service
+    - mon-down
 
 - include: mon/kill_mon.yml
   vars:
     random_hosts: random_two_mon_hosts
+  tags:
+    - service
+    - mon
+    - mon-service
+    - mon-down
 
 - include: mon/kill_mon.yml
   vars:
     random_hosts: random_three_mon_hosts
+  tags:
+    - service
+    - mon
+    - mon-service
+    - mon-down

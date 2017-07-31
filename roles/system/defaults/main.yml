@@ -4,3 +4,7 @@ cpu_stress_load: "50%"
 
 mem_stress_timeout: "5m"
 mem_stress_load: "50%"
+
+disk_stress_timeout: "5m"
+disk_stress_workers: 0
+disk_stress_load: "50%"

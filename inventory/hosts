@@ -24,7 +24,7 @@ myip
 myip
 
 [mon]
-10.0.0.[41:43]
+myip
 
 [osd]
 myip

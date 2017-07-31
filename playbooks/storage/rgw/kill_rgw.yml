@@ -2,7 +2,7 @@
 # in manual mode, it will prompt to ask if you want to recover
 # it.
 
-- name: "CASE: Storage - Ceph radosgw down on {{ random_hosts }}"
+- name: "CASE: Ceph radosgw down on {{ random_hosts }}"
   hosts: "{{ random_hosts }}"
   gather_facts: true
   tasks:

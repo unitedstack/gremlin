@@ -33,30 +33,15 @@
 
 
 ## System Level
-#CPU
-- include: rgw/cpu_load.yml
-  vars:
-    cpu_stress_load: "80%"
-    cpu_stress_timeout: "5m"
-    random_hosts: random_one_rgw_host
-  tags:
-    - rgw-cpu
 
-- include: rgw/cpu_load.yml
+- include: ../system/base.yml
   vars:
-    cpu_stress_load: "90%"
-    cpu_stress_timeout: "5m"
     random_hosts: random_one_rgw_host
+    node_group: rgw
   tags:
-    - rgw-cpu
-
-- include: rgw/cpu_load.yml
-  vars:
-    cpu_stress_load: "100%"
-    cpu_stress_timeout: "5m"
-    random_hosts: random_one_rgw_host
-  tags:
-    - rgw-cpu
+    - system
+    - rgw
+    - rgw-system
 
 
 ## Service Level
@@ -64,16 +49,25 @@
   vars:
     random_hosts: random_one_rgw_host
   tags:
+    - service
+    - rgw
+    - rgw-service
     - rgw-down
 
 - include: rgw/kill_rgw.yml
   vars:
     random_hosts: random_two_rgw_hosts
   tags:
+    - service
+    - rgw
+    - rgw-service
     - rgw-down
 
 - include: rgw/kill_rgw.yml
   vars:
     random_hosts: random_three_rgw_hosts
   tags:
+    - service
+    - rgw
+    - rgw-service
     - rgw-down
