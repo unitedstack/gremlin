@@ -30,6 +30,8 @@
         - "{{ shuffle_rgw_hosts[:3] }}"
       when:
         - rgw_group_num | int >= 3
+  tags:
+    - always
 
 
 ## System Level

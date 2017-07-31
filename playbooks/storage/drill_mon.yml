@@ -2,13 +2,14 @@
   hosts: localhost
   connection: local
   gather_facts: false
+  vars:
+    shuffle_mon_hosts: "{{ groups['mon'] | shuffle }}"
+    mon_group_num: "{{ groups['mon'] | length }}"
   tasks:
     - name: Random select one mon host
       add_host:
         groups: random_one_mon_host
         name: "{{ groups['mon'] | random }}"
-      vars:
-        - mon_group_num: "{{ groups['mon'] | length }}"
       when:
         - mon_group_num | int >= 1
 
@@ -16,9 +17,6 @@
       add_host:
         groups: random_two_mon_hosts
         name: "{{ item }}"
-      vars:
-        - shuffle_mon_hosts: "{{ groups['mon'] | shuffle }}"
-        - mon_group_num: "{{ groups['mon'] | length }}"
       with_items:
         - "{{ shuffle_mon_hosts[:2] }}"
       when:
@@ -28,13 +26,12 @@
       add_host:
         groups: random_three_mon_hosts
         name: "{{ item }}"
-      vars:
-        - shuffle_mon_hosts: "{{ groups['mon'] | shuffle }}"
-        - mon_group_num: "{{ groups['mon'] | length }}"
       with_items:
         - "{{ shuffle_mon_hosts[:3] }}"
       when:
         - mon_group_num | int >= 3
+  tags:
+    - always
 
 
 ## System Level
