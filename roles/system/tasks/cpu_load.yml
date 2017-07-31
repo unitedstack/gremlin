@@ -5,6 +5,13 @@
   become: true
   when: manage_packages|default(false)
 
+- name: Install htop
+  package:
+    name: htop
+    state: present
+  become: true
+  when: manage_packages|default(false)
+
 - name: Stress CPU load
   shell: stress-ng --cpu {{ cpu_stress_workers }} --cpu-load {{ cpu_stress_load }} --timeout {{ cpu_stress_timeout }}
   become: true

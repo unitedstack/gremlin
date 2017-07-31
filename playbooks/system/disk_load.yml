@@ -1,0 +1,11 @@
+# This playbook will do root file system stress load on specified node
+
+- name: "CASE: Stress {{ node_group }} host root file system load to {{ disk_stress_load }} for {{ disk_stress_timeout }}"
+  hosts: "{{ random_hosts }}"
+  gather_facts: true
+  tasks:
+    - include_role:
+        name: system
+        tasks_from: disk_load
+
+- include: ../utils/next.yml

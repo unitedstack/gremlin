@@ -5,6 +5,13 @@
   become: true
   when: manage_packages|default(false)
 
+- name: Install htop
+  package:
+    name: htop
+    state: present
+  become: true
+  when: manage_packages|default(false)
+
 - name: Caculate stress vm_bytes
   shell: awk '/MemAvailable/{printf "%d\n", $2 * {{ mem_stress_load[:-1] | int }} / 100;}' < /proc/meminfo
   register: vm_bytes

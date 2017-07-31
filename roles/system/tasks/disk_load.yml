@@ -5,6 +5,13 @@
   become: true
   when: manage_packages|default(false)
 
+- name: Install sysstat
+  package:
+    name: sysstat
+    state: present
+  become: true
+  when: manage_packages|default(false)
+
 - name: Stress root file system load(free space on the file system)
   shell: stress-ng --iomix {{ disk_stress_workers }} --iomix-bytes {{ disk_stress_load }} --timeout {{ disk_stress_timeout }}
   become: true
