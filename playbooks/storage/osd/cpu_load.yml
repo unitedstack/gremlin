@@ -1,0 +1,11 @@
+# This playbook will do cpu stress load on osd node
+
+- name: "CASE: Storage - Stress ceph osd host CPU load to {{ cpu_stress_load }} for {{ cpu_stress_timeout }}"
+  hosts: "{{ random_hosts }}"
+  gather_facts: true
+  tasks:
+    - include_role:
+        name: system
+        tasks_from: cpu_load
+
+- include: ../../utils/next.yml

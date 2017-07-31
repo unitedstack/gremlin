@@ -1,0 +1,25 @@
+- block:
+   - name: "Reset failed ceph osd status "
+     shell: "systemctl reset-failed ceph-osd@{{ item }}"
+     become: true
+     with_items:
+       - "{{ osd_down_list }}"
+
+   - name: "Start Ceph OSD"
+     service:
+       name: "ceph-osd@{{ item }}"
+       state: started
+     become: true
+     with_items:
+       - "{{ osd_down_list }}"
+
+  rescue:
+   - shell: "/etc/init.d/ceph start osd.{{ item }}"
+     become: true
+     with_items:
+       - "{{ osd_down_list }}"
+
+  always:
+   - name: Waiting 10 seconds to warm up
+     pause:
+       seconds: 10

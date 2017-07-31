@@ -1,0 +1,26 @@
+# This playbook will do osd kill drill test case, and if in manual
+# mode, it will prompt to ask if you want to recover it.
+
+- name: "CASE: Storage - Ceph OSD down on {{ random_hosts }}"
+  hosts: "{{ random_hosts }}"
+  gather_facts: true
+  tasks:
+    - include_role:
+        name: storage
+        tasks_from: kill_osd
+
+- include: ../../utils/ask.yml
+
+- name: Recover fault
+  hosts: "{{ random_hosts }}"
+  gather_facts: true
+  tasks:
+    - block:
+        - include_role:
+            name: storage
+            tasks_from: start_osd
+      vars:
+        - recovery: "{{ hostvars['localhost']['recovery'] }}"
+      when: mode == "auto" or recovery == "y" or recovery == "yes"
+
+- include: ../../utils/next.yml
