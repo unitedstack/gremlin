@@ -89,7 +89,7 @@ Now, following the steps to get started:
     4.3 Run ceph mon down test cases manually
 
     ```
-    ./drill.sh -t untagged,mon-down --moduel manual
+    ./drill.sh -t mon-pre,mon-down --moduel manual
     ```
 
 5. To get more help info
