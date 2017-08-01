@@ -1,0 +1,3 @@
+- name: clear tc rule
+  shell: tc qdisc del dev {{ nic }} root
+  become: true

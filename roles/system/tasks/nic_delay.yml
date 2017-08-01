@@ -1,0 +1,3 @@
+- name: Apply nic delay tc rule
+  shell: tc qdisc add dev {{ nic }} root netem delay {{ nic_delay_time }}
+  become: true

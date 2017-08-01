@@ -56,3 +56,34 @@
     disk_stress_timeout: "5m"
   tags:
     - "{{ node_group }}-disk"
+
+# Nic delay(Management Network)
+- include: nic_delay.yml
+  vars:
+    nic_delay_time: "100ms"
+    nic: "{{ mgmt_nic_name }}"
+  tags:
+    - "{{ node_group }}-nic-delay"
+
+- include: nic_delay.yml
+  vars:
+    nic_delay_time: "200ms"
+    nic: "{{ mgmt_nic_name }}"
+  tags:
+    - "{{ node_group }}-nic-delay"
+
+# Nic package loss(Management Network)
+- include: nic_loss.yml
+  vars:
+    nic_loss_percent: "70%"
+    nic: "{{ mgmt_nic_name }}"
+  tags:
+    - "{{ node_group }}-nic-loss"
+
+# Nic package loss(Management Network)
+- include: nic_loss.yml
+  vars:
+    nic_loss_percent: "60%"
+    nic: "{{ mgmt_nic_name }}"
+  tags:
+    - "{{ node_group }}-nic-loss"

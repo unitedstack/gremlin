@@ -4,7 +4,7 @@
 
 - name: "CASE: Ceph radosgw down on {{ random_hosts }}"
   hosts: "{{ random_hosts }}"
-  gather_facts: true
+  gather_facts: false
   tasks:
     - include_role:
         name: storage
