@@ -1,5 +1,6 @@
 - name: Ask if recover this fault when in manual mode
   hosts: localhost
+  gather_facts: false
   tasks:
     - set_fact:
         recovery: "no"

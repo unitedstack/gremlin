@@ -1,6 +1,6 @@
 # This playbook will do nic delay of specified nic on specified node
 
-- name: "CASE: Set {{ node_group }} host {{ nic }} delay to {{ nic_delay_time }}"
+- name: "CASE: Set {{ node_group }} host {{ nic }} delay to {{ nic_delay_time }} for {{ nic_delay_timeout }}"
   hosts: "{{ random_hosts }}"
   gather_facts: false
   tasks:
@@ -8,29 +8,4 @@
         name: system
         tasks_from: nic_delay
 
-- include: ../utils/ask.yml
-
-- name: Recover fault
-  hosts: "{{ random_hosts }}"
-  gather_facts: false
-  tasks:
-    - block:
-        - include_role:
-            name: system
-            tasks_from: clear_tc
-      vars:
-        - recovery: "{{ hostvars['localhost']['recovery'] }}"
-      when: mode == "auto" or recovery == "y" or recovery == "yes" 
-
 - include: ../utils/next.yml
-
-# Before we do the next test case, we should clean up the tc rules
-# generated in the previous one
-- name: Clean up
-  hosts: "{{ random_hosts }}"
-  gather_facts: false
-  tasks:
-    - block:
-        - include_role:
-            name: system
-            tasks_from: clear_tc

@@ -61,6 +61,7 @@
 - include: nic_delay.yml
   vars:
     nic_delay_time: "100ms"
+    nic_delay_timeout: "5m"
     nic: "{{ mgmt_nic_name }}"
   tags:
     - "{{ node_group }}-nic-delay"
@@ -68,6 +69,7 @@
 - include: nic_delay.yml
   vars:
     nic_delay_time: "200ms"
+    nic_delay_timeout: "5m"
     nic: "{{ mgmt_nic_name }}"
   tags:
     - "{{ node_group }}-nic-delay"
@@ -75,7 +77,8 @@
 # Nic package loss(Management Network)
 - include: nic_loss.yml
   vars:
-    nic_loss_percent: "70%"
+    nic_loss_percent: "80%"
+    nic_loss_timeout: "5m"
     nic: "{{ mgmt_nic_name }}"
   tags:
     - "{{ node_group }}-nic-loss"
@@ -83,7 +86,8 @@
 # Nic package loss(Management Network)
 - include: nic_loss.yml
   vars:
-    nic_loss_percent: "60%"
+    nic_loss_percent: "90%"
+    nic_loss_timeout: "5m"
     nic: "{{ mgmt_nic_name }}"
   tags:
     - "{{ node_group }}-nic-loss"

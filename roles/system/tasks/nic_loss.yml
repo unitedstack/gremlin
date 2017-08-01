@@ -1,3 +1,6 @@
 - name: Apply nic loss tc rule
-  shell: tc qdisc add dev {{ nic }} root netem loss {{ nic_loss_percent }}
+  shell: >
+    tc qdisc add dev {{ nic }} root netem loss {{ nic_loss_percent }};
+    sleep {{ nic_loss_timeout }};
+    tc qdisc del dev {{ nic }} root;
   become: true
