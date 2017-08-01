@@ -83,7 +83,6 @@
   tags:
     - "{{ node_group }}-nic-loss"
 
-# Nic package loss(Management Network)
 - include: nic_loss.yml
   vars:
     nic_loss_percent: "90%"
@@ -91,3 +90,11 @@
     nic: "{{ mgmt_nic_name }}"
   tags:
     - "{{ node_group }}-nic-loss"
+
+# Nic down(Management Network)
+- include: nic_down.yml
+  vars:
+    nic_down_timeout: "5m"
+    nic: "{{ mgmt_nic_name }}"
+  tags:
+    - "{{ node_group }}-nic-down"
