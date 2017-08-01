@@ -31,7 +31,7 @@
       when:
         - rgw_group_num | int >= 3
   tags:
-    - always
+    - rgw-pre
 
 
 ## System Level

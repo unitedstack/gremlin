@@ -31,7 +31,7 @@
       when:
         - mon_group_num | int >= 3
   tags:
-    - always
+    - mon-pre
 
 
 ## System Level
