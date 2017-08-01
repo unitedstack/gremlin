@@ -194,42 +194,31 @@
         path: "/tmp/get-random-osd.py"
         state: absent
       delegate_to: "{{ ceph_client_host }}"
+  tags:
+    - osd-pre
 
 
 ## System Level
-#CPU
-- include: osd/cpu_load.yml
-  vars:
-    cpu_stress_load: "80%"
-    cpu_stress_timeout: "5m"
-    random_hosts: random_one_osd_host
-  tags:
-    - osd-cpu
 
-- include: osd/cpu_load.yml
+- include: ../system/base.yml
   vars:
-    cpu_stress_load: "90%"
-    cpu_stress_timeout: "5m"
     random_hosts: random_one_osd_host
+    node_group: osd
   tags:
-    - osd-cpu
-
-- include: osd/cpu_load.yml
-  vars:
-    cpu_stress_load: "100%"
-    cpu_stress_timeout: "5m"
-    random_hosts: random_one_osd_host
-  tags:
-    - osd-cpu
+    - system
+    - osd
+    - osd-system
 
 
 ## Service Level
-#
 - include: osd/kill_osd.yml
   vars:
     random_hosts: same_one_osd_host
     osd_down_list: "{{ same_one_osd_list }}"
   tags:
+    - service
+    - osd
+    - osd-service
     - osd-down
 
 - include: osd/kill_osd.yml
@@ -237,6 +226,9 @@
     random_hosts: same_two_osd_hosts
     osd_down_list: "{{ same_two_osds_list }}"
   tags:
+    - service
+    - osd
+    - osd-service
     - osd-down
 
 - include: osd/kill_osd.yml
@@ -244,6 +236,9 @@
     random_hosts: same_three_osd_hosts
     osd_down_list: "{{ same_three_osds_list }}"
   tags:
+    - service
+    - osd
+    - osd-service
     - osd-down
 
 - include: osd/kill_osd.yml
@@ -251,6 +246,9 @@
     random_hosts: various_two_osd_hosts
     osd_down_list: "{{ various_two_osds_list }}"
   tags:
+    - service
+    - osd
+    - osd-service
     - osd-down
 
 - include: osd/kill_osd.yml
@@ -258,6 +256,9 @@
     random_hosts: various_three_osd_hosts
     osd_down_list: "{{ various_three_osds_list }}"
   tags:
+    - service
+    - osd
+    - osd-service
     - osd-down
 
 - include: osd/kill_osd.yml
@@ -265,4 +266,7 @@
     random_hosts: various_four_osd_hosts
     osd_down_list: "{{ various_four_osds_list }}"
   tags:
+    - service
+    - osd
+    - osd-service
     - osd-down
