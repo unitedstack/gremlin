@@ -1,0 +1,5 @@
+- name: ifdown the nic asynchronously
+  shell: ifdown {{ nic }}
+  async: 0
+  poll: 0
+  become: true

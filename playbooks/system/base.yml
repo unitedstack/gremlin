@@ -48,14 +48,14 @@
     disk_stress_load: "80%"
     disk_stress_timeout: "5m"
   tags:
-    - "{{ node_group }}-disk"
+    - "{{ node_group }}-root-disk"
 
 - include: disk_load.yml
   vars:
     disk_stress_load: "90%"
     disk_stress_timeout: "5m"
   tags:
-    - "{{ node_group }}-disk"
+    - "{{ node_group }}-root-disk"
 
 # Nic delay(Management Network)
 - include: nic_delay.yml
@@ -64,7 +64,7 @@
     nic_delay_timeout: "5m"
     nic: "{{ mgmt_nic_name }}"
   tags:
-    - "{{ node_group }}-nic-delay"
+    - "{{ node_group }}-mgmt-nic-delay"
 
 - include: nic_delay.yml
   vars:
@@ -72,7 +72,7 @@
     nic_delay_timeout: "5m"
     nic: "{{ mgmt_nic_name }}"
   tags:
-    - "{{ node_group }}-nic-delay"
+    - "{{ node_group }}-mgmt-nic-delay"
 
 # Nic package loss(Management Network)
 - include: nic_loss.yml
@@ -81,7 +81,7 @@
     nic_loss_timeout: "5m"
     nic: "{{ mgmt_nic_name }}"
   tags:
-    - "{{ node_group }}-nic-loss"
+    - "{{ node_group }}-mgmt-nic-loss"
 
 - include: nic_loss.yml
   vars:
@@ -89,7 +89,7 @@
     nic_loss_timeout: "5m"
     nic: "{{ mgmt_nic_name }}"
   tags:
-    - "{{ node_group }}-nic-loss"
+    - "{{ node_group }}-mgmt-nic-loss"
 
 # Nic down(Management Network)
 - include: nic_down.yml
@@ -97,4 +97,4 @@
     nic_down_timeout: "5m"
     nic: "{{ mgmt_nic_name }}"
   tags:
-    - "{{ node_group }}-nic-down"
+    - "{{ node_group }}-mgmt-nic-down"
