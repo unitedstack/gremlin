@@ -9,7 +9,7 @@
         name: storage
         tasks_from: kill_osd
 
-- include: ../../utils/ask.yml
+- include: ../../common/ask.yml
 
 - name: Recover fault
   hosts: "{{ random_hosts }}"
@@ -23,4 +23,4 @@
         - recovery: "{{ hostvars['localhost']['recovery'] }}"
       when: mode == "auto" or recovery == "y" or recovery == "yes"
 
-- include: ../../utils/next.yml
+- include: ../../common/next.yml

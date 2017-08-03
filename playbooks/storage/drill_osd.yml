@@ -5,8 +5,8 @@
   vars:
     osd_group_num: "{{ groups['osd'] | length }}"
     get_osd_script_path: "../../files/get-random-osd.py"
-    random_osd_json: "/tmp/random-osd.json"
     ceph_client_host: "{{ groups['storage'][0] }}"
+    osd_down_precentage: 30
   tasks:
     - name: Copy get-random-osd.py to storage node
       copy: 
@@ -15,179 +15,79 @@
         mode: 0644
       delegate_to: "{{ ceph_client_host }}"
 
-    - block:
-        - shell: "python get-random-osd.py -n 2" 
-          args:
-            chdir: /tmp
-          delegate_to: "{{ ceph_client_host }}"
-        
-        - fetch:
-            src: "{{ random_osd_json }}"
-            dest: "{{ random_osd_json }}"
-            flat: yes
-            fail_on_missing: yes
-          delegate_to: "{{ ceph_client_host }}"
+    - shell: "python get-random-osd.py --get-pg-osd --mgmt-osd 
+             --format json --file /tmp/get-pg-osd"
+      args:
+        chdir: /tmp
+      delegate_to: "{{ ceph_client_host }}"
+    
+    - fetch:
+        src: "/tmp/get-pg-osd.json"
+        dest: "/tmp/get-pg-osd.json"
+        flat: yes
+        fail_on_missing: yes
+      delegate_to: "{{ ceph_client_host }}"
 
-        - include_vars:
-            name: _various_two_osds_map
-            file: "{{ random_osd_json }}"
+    - include_vars:
+        name: _get_pg_osd
+        file: "/tmp/get-pg-osd.json"
 
-        - file:
-            path: "{{ random_osd_json }}"
-            state: absent
+    - file:
+        path: "/tmp/get-pg-osd.json"
+        state: absent
 
-        - name: Random select two osds in various racks/hosts      
-          add_host:
-            groups: various_two_osd_hosts
-            name: "{{ item.key }}"
-            various_two_osds_list: "{{ item.value }}"
-          with_dict: "{{ _various_two_osds_map }}"
-      when: osd_group_num | int >= 2
+    - name: Select one osd in random PG     
+      add_host:
+        groups: one_osd_pg_hosts
+        name: "{{ item.key }}"
+        one_osd_pg_list: "{{ item.value }}"
+      with_dict: "{{ _get_pg_osd['items'][0] }}"
+      when: _get_pg_osd['size'] >= 1
 
-    - block:
-        - shell: "python get-random-osd.py -n 3"
-          args:
-            chdir: /tmp
-          delegate_to: "{{ ceph_client_host }}"
+    - name: Select two osds in random PG 
+      add_host:
+        groups: two_osds_pg_hosts
+        name: "{{ item.key }}"
+        two_osds_pg_list: "{{ item.value }}"
+      with_dict: "{{ _get_pg_osd['items'][1] }}"
+      when: _get_pg_osd['size'] >= 2
 
-        - fetch:
-            src: "{{ random_osd_json }}"
-            dest: "{{ random_osd_json }}"
-            flat: yes
-            fail_on_missing: yes
-          delegate_to: "{{ ceph_client_host }}"
+    - name: Select three osds in random PG
+      add_host:
+        groups: three_osds_pg_hosts
+        name: "{{ item.key }}"
+        three_osds_pg_list: "{{ item.value }}"
+      with_dict: "{{ _get_pg_osd['items'][2] }}"
+      when: _get_pg_osd['size'] >= 3
 
-        - include_vars:
-            name: _various_three_osds_map
-            file: "{{ random_osd_json }}"
+    - shell: "python get-random-osd.py --get-random-osd 
+             --percentage {{ osd_down_precentage }} --mgmt-osd 
+             --format json --file /tmp/get-random-osd"
+      args:
+        chdir: /tmp
+      delegate_to: "{{ ceph_client_host }}"
+    
+    - fetch:
+        src: "/tmp/get-random-osd.json"
+        dest: "/tmp/get-random-osd.json"
+        flat: yes
+        fail_on_missing: yes
+      delegate_to: "{{ ceph_client_host }}"
 
-        - file:
-            path: "{{ random_osd_json }}"
-            state: absent
+    - include_vars:
+        name: _get_random_osd
+        file: "/tmp/get-random-osd.json"
 
-        - name: Random select three osds in various racks/hosts      
-          add_host:
-            groups: various_three_osd_hosts
-            name: "{{ item.key }}"
-            various_three_osds_list: "{{ item.value }}"
-          with_dict: "{{ _various_three_osds_map }}"
-      when: osd_group_num | int >= 3
+    - file:
+        path: "/tmp/get-random-osd.json"
+        state: absent
 
-    - block:
-        - shell: "python get-random-osd.py -n 4"
-          args:
-            chdir: /tmp
-          delegate_to: "{{ ceph_client_host }}"
-
-        - fetch:
-            src: "{{ random_osd_json }}"
-            dest: "{{ random_osd_json }}"
-            flat: yes
-            fail_on_missing: yes
-          delegate_to: "{{ ceph_client_host }}"
-
-        - include_vars:
-            name: _various_four_osds_map
-            file: "{{ random_osd_json }}"
-
-        - file:
-            path: "{{ random_osd_json }}"
-            state: absent
-
-        - name: Random select four osds in various racks/hosts
-          add_host:
-            groups: various_four_osd_hosts
-            name: "{{ item.key }}"
-            various_four_osds_list: "{{ item.value }}"
-          with_dict: "{{ _various_four_osds_map }}"
-      when: osd_group_num | int >= 3
-
-    - block:
-        - shell: "python get-random-osd.py -s -n 1"
-          args:
-            chdir: /tmp
-          delegate_to: "{{ ceph_client_host }}"
-
-        - fetch:
-            src: "{{ random_osd_json }}"
-            dest: "{{ random_osd_json }}"
-            flat: yes
-            fail_on_missing: yes
-          delegate_to: "{{ ceph_client_host }}"
-
-        - include_vars:
-            name: _same_one_osd_map
-            file: "{{ random_osd_json }}"
-
-        - file:
-            path: "{{ random_osd_json }}"
-            state: absent
-
-        - name: Random select one osd in same rack/host
-          add_host:
-            groups: same_one_osd_host
-            name: "{{ item.key }}"
-            same_one_osd_list: "{{ item.value }}"
-          with_dict: "{{ _same_one_osd_map }}"
-      when: osd_group_num | int >= 1
-
-    - block:
-        - shell: "python get-random-osd.py -s -n 2"
-          args:
-            chdir: /tmp
-          delegate_to: "{{ ceph_client_host }}"
-
-        - fetch:
-            src: "{{ random_osd_json }}"
-            dest: "{{ random_osd_json }}"
-            flat: yes
-            fail_on_missing: yes
-          delegate_to: "{{ ceph_client_host }}"
-
-        - include_vars:
-            name: _same_two_osds_map
-            file: "{{ random_osd_json }}"
-
-        - file:
-            path: "{{ random_osd_json }}"
-            state: absent
-
-        - name: Random select two osds in same rack/host
-          add_host:
-            groups: same_two_osd_hosts
-            name: "{{ item.key }}"
-            same_two_osds_list: "{{ item.value }}"
-          with_dict: "{{ _same_two_osds_map }}"
-      when: osd_group_num | int >= 1
-
-    - block:
-        - shell: "python get-random-osd.py -s -n 3"
-          args:
-            chdir: /tmp
-          delegate_to: "{{ ceph_client_host }}"
-
-        - fetch:
-            src: "{{ random_osd_json }}"
-            dest: "{{ random_osd_json }}"
-            flat: yes
-            fail_on_missing: yes
-          delegate_to: "{{ ceph_client_host }}"
-
-        - include_vars:
-            name: _same_three_osds_map
-            file: "{{ random_osd_json }}"
-
-        - file:
-            path: "{{ random_osd_json }}"
-            state: absent
-
-        - name: Random select three osds on same rack/host
-          add_host:
-            groups: same_three_osd_hosts
-            name: "{{ item.key }}"
-            same_three_osds_list: "{{ item.value }}"
-          with_dict: "{{ _same_three_osds_map }}"
-      when: osd_group_num | int >= 1
+    - name: Select some random osds
+      add_host:
+        groups: random_osd_hosts
+        name: "{{ item.key }}"
+        random_osd_list: "{{ item.value }}"
+      with_dict: "{{ _get_random_osd['items'] }}"
 
     - name: Absent get-random-osd.py from storage node
       file:
@@ -213,8 +113,8 @@
 ## Service Level
 - include: osd/kill_osd.yml
   vars:
-    random_hosts: same_one_osd_host
-    osd_down_list: "{{ same_one_osd_list }}"
+    random_hosts: one_osd_pg_hosts
+    osd_down_list: "{{ one_osd_pg_list }}"
   tags:
     - service
     - osd
@@ -223,8 +123,8 @@
 
 - include: osd/kill_osd.yml
   vars:
-    random_hosts: same_two_osd_hosts
-    osd_down_list: "{{ same_two_osds_list }}"
+    random_hosts: two_osds_pg_hosts
+    osd_down_list: "{{ two_osds_pg_list }}"
   tags:
     - service
     - osd
@@ -233,8 +133,8 @@
 
 - include: osd/kill_osd.yml
   vars:
-    random_hosts: same_three_osd_hosts
-    osd_down_list: "{{ same_three_osds_list }}"
+    random_hosts: three_osds_pg_hosts
+    osd_down_list: "{{ three_osds_pg_list }}"
   tags:
     - service
     - osd
@@ -243,28 +143,8 @@
 
 - include: osd/kill_osd.yml
   vars:
-    random_hosts: various_two_osd_hosts
-    osd_down_list: "{{ various_two_osds_list }}"
-  tags:
-    - service
-    - osd
-    - osd-service
-    - osd-down
-
-- include: osd/kill_osd.yml
-  vars:
-    random_hosts: various_three_osd_hosts
-    osd_down_list: "{{ various_three_osds_list }}"
-  tags:
-    - service
-    - osd
-    - osd-service
-    - osd-down
-
-- include: osd/kill_osd.yml
-  vars:
-    random_hosts: various_four_osd_hosts
-    osd_down_list: "{{ various_four_osds_list }}"
+    random_hosts: random_osd_hosts
+    osd_down_list: "{{ random_osd_list }}"
   tags:
     - service
     - osd

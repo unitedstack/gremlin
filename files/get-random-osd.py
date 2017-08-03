@@ -1,120 +1,218 @@
-#!/usr/bin/env python
+#!/use/bin/env python
 
 from __future__ import print_function
 
 import subprocess
 import json
-import argparse
-import random
 import socket
+import random
+import time
+import argparse
 
-_is_rack = False
+bucket_id_map = {}
+host_osd_map = {}
+osd_host_map = {}
+pg_map = {}
 
-def get_map():
-    cmd = ['ceph', 'osd', 'crush', 'tree', '--format', 'json']
-    ceph_osd_crush_tree_json = subprocess.check_output(cmd)
-    ceph_osd_crush_tree = json.loads(ceph_osd_crush_tree_json)
+def init_osd_map():
 
-    osd_map = {}
-    global _is_rack
+    CMD = ['ceph', 'osd', 'crush', 'dump', '--format', 'json']
 
-    for top_item in ceph_osd_crush_tree:
-        if top_item['type'] == 'root':
-            for l2_item in top_item['items']:
-                if l2_item['type'] == 'rack':
-                    _is_rack = True
-                    osd_map[l2_item['name']] = {}
-                    for l3_item in l2_item['items']:
-                        if l3_item['type'] == 'host':
-                            osd_map[l2_item['name']][l3_item['name']] = []
-                            for osd in l3_item['items']:
-                                if osd['type'] == 'osd':
-                                    osd_map[l2_item['name']][l3_item['name']].append(osd['id'])
-                elif l2_item['type'] == 'host':
-                    _is_rack = False
-                    osd_map[l2_item['name']] = []
-                    for l3_item in l2_item['items']:
-                        if l3_item['type'] == 'osd':
-                            osd_map[l2_item['name']].append(l3_item['id'])
-    return osd_map
+    ceph_osd_crush_dump_json = subprocess.check_output(CMD)
+    ceph_osd_crush_dump = json.loads(ceph_osd_crush_dump_json)
+    
+    global bucket_id_map
+    for bucket in ceph_osd_crush_dump['buckets']:
+        bucket_id_map[bucket['id']] = dict({'type': bucket['type_name'],
+                                         'name': bucket['name'],
+                                         'items': [ item['id'] for item in bucket['items']]})
 
-def get_random_osd(num, same_bucket=False):
+    host_id_list = [ item for item in bucket_id_map.keys()
+                     if bucket_id_map[item]['type'] == 'host']
+    global host_osd_map
+    for item in host_id_list:
+        host_name = bucket_id_map[item]['name']
+        host_ip = socket.gethostbyname(host_name)
+        host_osds = bucket_id_map[item]['items']
+        host_osd_map[host_name] = dict({'mgmt': host_ip,
+                                        'id':  item,
+                                        'osds': host_osds})
 
-    osd_map = get_map()
-    random_bucket = []
-    osd = []
-    random_osd = []
+    global osd_host_map
+    for host in host_osd_map.keys():
+        for osd in host_osd_map[host]['osds']:
+            osd_name = ceph_osd_crush_dump['devices'][osd]['name']
+            osd_mgmt = host_osd_map[host]['mgmt']
+            osd_host_map[osd] = dict({'host': host,
+                                      'name': osd_name,
+                                      'mgmt': osd_mgmt})
 
-    for bucket in osd_map:
-        random_bucket.append(bucket)
-    random.shuffle(random_bucket)
+def init_pg_map():
 
-    if same_bucket:
-        bucket = random_bucket[0]
-        
-        if _is_rack:
-            for host in osd_map[bucket]:
-                osd.extend(osd_map[bucket][host])
-        else:
-            osd = osd_map[bucket]
+    CMD = ['ceph', 'pg', 'dump', '--format', 'json']
 
-    else:
-        for bucket in random_bucket:
-          if _is_rack:
-              for host in osd_map[bucket]:
-                  osd.extend(osd_map[bucket][host])
-          else:
-              osd.extend(osd_map[bucket])
+    ceph_pg_dump_json = subprocess.check_output(CMD)
+    ceph_pg_dump = json.loads(ceph_pg_dump_json)
+   
+    global pg_map
+    for item in ceph_pg_dump['pg_stats']:
+        pg_id = item['pgid']
+        pg_map[pg_id] = item['acting']
 
-    random.shuffle(osd)
-    random_osd = osd[:num]
+def get_random_osd(map_data, num=1):
+
+    random_osd = {}
+    random_osd['size'] = num
+
+    random.seed(time.time())
+    random_osd_list = random.sample(map_data.keys(), num)
+    random_osd['items'] = {}
+
+    for osd in random_osd_list:
+        random_osd['items'][osd] = map_data[osd]
+
+    return random_osd  
+
+def get_random_osd_from_pg(pg_map, osd_map):
+
+    random_osd = {}
+
+    random_pg_id = random.choice(pg_map.keys())
+    random_osd['pgid'] = random_pg_id
+
+    random_osd_list = pg_map[random_pg_id]
+    random_osd['size'] = len(random_osd_list)
+    random_osd['items'] = {}
+
+    for osd in random_osd_list:
+        random_osd['items'][osd] = osd_map[osd]
 
     return random_osd
 
-def osd_to_host_ip(osd_id):
-    osd_map = get_map()
-    
-    if _is_rack:
-        for rack, hosts in osd_map.items():
-           for host in hosts:
-               if osd_id in osd_map[rack][host]:
-                   return socket.gethostbyname(host)
+def reformat_mgmt_osd_map(osd_map):
+
+    mgmt_osd_map = {}
+
+    for osd in osd_map:
+        mgmt_addr = osd_map[osd]['mgmt']
+        if mgmt_addr not in mgmt_osd_map.keys():
+            mgmt_osd_map[mgmt_addr] = []
+        mgmt_osd_map[mgmt_addr].append(osd)
+
+    return mgmt_osd_map
+
+def output_data(data, output_format='plain', filename=None):
+
+    if filename:
+        if output_format == 'plain':
+            file_handler = open(filename, 'w')
+            file_handler.write(data)  
+        elif output_format == 'json':
+            file_handler = open(filename + '.json', 'w')
+            file_handler.write(json.dumps(data))
+        elif output_format == 'json-pretty':
+            file_handler = open(filename + '.json', 'w')
+            file_handler.write(json.dumps(data, indent=2))
+        else:
+            print("Unsupport this {FORMAT} format".format(FORMAT=output_format))
+        file_handler.close()
     else:
-        for host, osds in osd_map.items():
-            if osd_id in osd_map[host]:
-                return socket.gethostbyname(host)
+        if output_format == 'plain':
+            print(data)
+        elif output_format == 'json':
+            print(json.dumps(data))
+        elif output_format == 'json-pretty':
+            print(json.dumps(data, indent=2))
+        else:
+            print("Unsupport this {FORMAT} format!".format(FORMAT=output_format))
 
-def dump_random_osd_json(num, filename, same_bucket):
-    ip_osd_map = {}
-    random_osd = get_random_osd(num, same_bucket=same_bucket)
-    for osd in random_osd:
-        osd_host_ip = osd_to_host_ip(osd)
-        if str(osd_host_ip) not in ip_osd_map:
-            ip_osd_map[str(osd_host_ip)] = []
-        ip_osd_map[str(osd_host_ip)].append(osd)
+def init_argument(parser):
 
-    json_file = open(filename, 'w')
-    json_file.write(json.dumps(ip_osd_map))
-    json_file.close() 
+    parser.add_argument('-n', '--number', nargs=1, type=int)
+    parser.add_argument('-p', '--percentage', nargs=1, type=int)
+    parser.add_argument('--list-host-map', action='store_true')
+    parser.add_argument('--list-osd-map', action='store_true')
+    parser.add_argument('--list-pg-map', action='store_true')
+    parser.add_argument('-F', '--format', nargs=1)
+    parser.add_argument('-f', '--file', nargs=1)
+    parser.add_argument('--get-random-osd', action='store_true')
+    parser.add_argument('--get-pg-osd', action='store_true')
+    parser.add_argument('--mgmt-osd', action='store_true')
 
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-s', '--same-bucket', action='store_true')
-    parser.add_argument('-n', '--osd-down-num', nargs=1, type=int, default=0)
-    parser.add_argument('-l', '--list', action='store_true')
-    parser.add_argument('--list-pretty', action='store_true')
     args = parser.parse_args()
 
-    if args.same_bucket:
-        same_bucket = True
+    return args
+
+def take_action(args):
+
+    if isinstance(args.format, list):
+        output_format = args.format[0]
     else:
-        same_bucket = False
+        output_format = 'plain'
 
-    if args.list:
-        print(json.dumps(get_map()))
-    elif args.list_pretty:
-        print(json.dumps(get_map(), indent=2))
+    if isinstance(args.file, list):
+        output_filename = args.file[0]
+    else:
+        output_filename = None
 
-    if args.osd_down_num:
-        dump_random_osd_json(int(args.osd_down_num[0]), '/tmp/random-osd.json', same_bucket)
+    if isinstance(args.percentage, list):
+        percentage = args.percentage[0]
+        osd_number = int(len(osd_host_map.keys()) * (percentage / 100.0))
+    elif isinstance(args.number, list):
+        osd_number = args.number[0]
+    else:
+        osd_number = 1
+
+    if args.mgmt_osd:
+        mgmt_osd_enabled = True
+    else:
+        mgmt_osd_enabled = False
+
+    if args.list_host_map:
+        output_data(host_osd_map, output_format, output_filename)
+
+    if args.list_osd_map:
+        if mgmt_osd_enabled:
+            output_map = reformat_mgmt_osd_map(osd_host_map)
+        else:
+            output_map = osd_host_map
+        output_data(output_map, output_format, output_filename)
+
+    if args.list_pg_map:
+        output_data(pg_map, output_format, output_filename)
+
+    if args.get_random_osd:
+        random_osd = get_random_osd(osd_host_map, osd_number)
+        if mgmt_osd_enabled:
+            output_map_temp = reformat_mgmt_osd_map(random_osd['items'])
+            output_map = dict({'size': random_osd['size'],
+                               'items': output_map_temp})
+        else:
+            output_map = random_osd
+        output_data(output_map, output_format, output_filename)
+
+    if args.get_pg_osd:
+        random_osd = get_random_osd_from_pg(pg_map, osd_host_map)
+        if mgmt_osd_enabled:
+            osd_list = random_osd['items'].keys()
+            output_list = []
+            for num in range(1,random_osd['size'] + 1):
+                random_osd_temp = {}
+                for osd in osd_list[:num]:
+                    random_osd_temp[osd] = random_osd['items'][osd]
+                output_list.append(reformat_mgmt_osd_map(random_osd_temp))
+            output_map = dict({'size': random_osd['size'],
+                               'items': output_list})
+        else:
+            output_map = random_osd
+        output_data(output_map, output_format, output_filename)
+        
+if __name__ == '__main__':
+
+    init_osd_map()
+    init_pg_map()
+
+    parser = argparse.ArgumentParser()
+    args = init_argument(parser)
+
+    take_action(args)
