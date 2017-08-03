@@ -8,4 +8,4 @@
         name: system
         tasks_from: nic_down
 
-- include: ../utils/next.yml
+- include: ../common/next.yml

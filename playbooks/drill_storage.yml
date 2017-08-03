@@ -1,3 +1,2 @@
 - include: storage/drill_mon.yml
-
 - include: storage/drill_rgw.yml

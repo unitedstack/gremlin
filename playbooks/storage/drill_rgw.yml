@@ -35,7 +35,6 @@
 
 
 ## System Level
-
 - include: ../system/base.yml
   vars:
     random_hosts: random_one_rgw_host

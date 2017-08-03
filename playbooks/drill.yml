@@ -1,1 +1,2 @@
 - include: drill_storage.yml
+- include: drill_control.yml

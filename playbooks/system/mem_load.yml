@@ -8,4 +8,4 @@
         name: system
         tasks_from: mem_load
 
-- include: ../utils/next.yml
+- include: ../common/next.yml

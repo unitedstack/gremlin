@@ -1,0 +1,19 @@
+# Start a service
+
+- block:
+    - name: "Try to start service {{ service_name }} using systemctl"
+      service: 
+        name: "{{ service_name }}"
+        state: started
+      become: true
+
+  rescue:
+    - name: "Try to start service {{ service_name }} using service"
+      shell: service {{ service_name }} start
+      become: true
+      ignore_errors: yes
+
+  always:
+   - name: Waiting 10 seconds to warm up
+     pause:
+       seconds: 10

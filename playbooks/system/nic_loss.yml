@@ -8,4 +8,4 @@
         name: system
         tasks_from: nic_loss
 
-- include: ../utils/next.yml
+- include: ../common/next.yml

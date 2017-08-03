@@ -1,0 +1,26 @@
+# This playbook will do specified service drill test cases, and if
+# in manual mode, it will prompt to ask if you want to recover it.
+
+- name: "CASE: Stop {{ service_name }} service on {{ random_hosts }}"
+  hosts: "{{ random_hosts }}"
+  gather_facts: false
+  tasks:
+    - include_role:
+        name: common
+        tasks_from: stop_service
+
+- include: ask.yml
+
+- name: Recover fault
+  hosts: "{{ random_hosts }}"
+  gather_facts: false
+  tasks:
+    - block:
+        - include_role:
+            name: common
+            tasks_from: start_service
+      vars:
+        - recovery: "{{ hostvars['localhost']['recovery'] }}"
+      when: mode == "auto" or recovery == "y" or recovery == "yes" 
+
+- include: next.yml

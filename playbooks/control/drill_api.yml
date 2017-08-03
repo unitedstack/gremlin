@@ -1,0 +1,70 @@
+- name: Preparing for api node tests
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    shuffle_api_hosts: "{{ groups['api'] | shuffle }}"
+    api_group_num: "{{ groups['api'] | length }}"
+  tasks:
+    - name: Random select one api host
+      add_host:
+        groups: random_one_api_host
+        name: "{{ groups['api'] | random }}"
+      when:
+        - api_group_num | int >= 1
+
+    - name: Random select two api hosts
+      add_host:
+        groups: random_two_api_hosts
+        name: "{{ item }}"
+      with_items:
+        - "{{ shuffle_api_hosts[:2] }}"
+      when:
+        - api_group_num | int >= 2
+
+    - name: Random select three api hosts
+      add_host:
+        groups: random_three_api_hosts
+        name: "{{ item }}"
+      with_items:
+        - "{{ shuffle_api_hosts[:3] }}"
+      when:
+        - api_group_num | int >= 3
+  tags:
+    - api-pre
+
+## Service Level
+
+# Nova
+- include: ../common/service.yml
+  vars:
+    random_hosts: random_one_api_host
+    service_name: openstack-nova-api
+  tags:
+    - service
+    - api
+    - api-service
+    - control
+    - nova
+
+- include: ../common/service.yml
+  vars:
+    random_hosts: random_two_api_hosts
+    service_name: openstack-nova-api
+  tags:
+    - service
+    - api
+    - api-service
+    - control
+    - nova
+
+- include: ../common/service.yml
+  vars:
+    random_hosts: random_three_api_hosts
+    service_name: openstack-nova-api
+  tags:
+    - service
+    - api
+    - api-service
+    - control
+    - nova

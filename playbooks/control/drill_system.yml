@@ -1,0 +1,27 @@
+- name: Preparing for control node tests
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    shuffle_control_hosts: "{{ groups['control'] | shuffle }}"
+    control_group_num: "{{ groups['control'] | length }}"
+  tasks:
+    - name: Random select one control host
+      add_host:
+        groups: random_one_control_host
+        name: "{{ groups['control'] | random }}"
+      when:
+        - control_group_num | int >= 1
+  tags:
+    - control-pre
+
+
+## System Level
+- include: ../system/base.yml
+  vars:
+    random_hosts: random_one_control_host
+    node_group: control
+  tags:
+    - system
+    - control
+    - control-system

@@ -1,0 +1,19 @@
+# Stop a service
+
+- block:
+    - name: "Try to stop service {{ service_name }} using systemctl"
+      service: 
+        name: "{{ service_name }}"
+        state: stopped
+      become: true
+
+  rescue:
+    - name: "Try to stop service {{ service_name }} using service"
+      shell: service {{ service_name }} stop
+      become: true
+      ignore_errors: yes
+
+  always:
+   - name: Waiting 10 seconds to warm down
+     pause:
+       seconds: 10
