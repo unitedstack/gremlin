@@ -62,10 +62,14 @@ def init_pg_map():
 def get_random_osd(map_data, num=1):
 
     random_osd = {}
-    random_osd['size'] = num
 
     random.seed(time.time())
-    random_osd_list = random.sample(map_data.keys(), num)
+    try:
+        random_osd_list = random.sample(map_data.keys(), num)
+    except ValueError:
+        print("The total osds is {TOTAL}".format(TOTAL=len(map_data.keys()))) 
+        random_osd_list = map_data.keys()
+    random_osd['size'] = len(random_osd_list)
     random_osd['items'] = {}
 
     for osd in random_osd_list:
