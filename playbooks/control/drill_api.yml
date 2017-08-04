@@ -36,35 +36,4 @@
 ## Service Level
 
 # Nova
-- include: ../common/service.yml
-  vars:
-    random_hosts: random_one_api_host
-    service_name: openstack-nova-api
-  tags:
-    - service
-    - api
-    - api-service
-    - control
-    - nova
-
-- include: ../common/service.yml
-  vars:
-    random_hosts: random_two_api_hosts
-    service_name: openstack-nova-api
-  tags:
-    - service
-    - api
-    - api-service
-    - control
-    - nova
-
-- include: ../common/service.yml
-  vars:
-    random_hosts: random_three_api_hosts
-    service_name: openstack-nova-api
-  tags:
-    - service
-    - api
-    - api-service
-    - control
-    - nova
+- include: nova/service.yml
