@@ -37,3 +37,9 @@
 
 # Nova
 - include: nova/service.yml
+  tags:
+    - service
+    - api
+    - api-service
+    - control
+    - nova
