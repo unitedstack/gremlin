@@ -2,15 +2,15 @@
 
 - include: ../../common/service.yml
   vars:
-    random_hosts: random_one_api_host
+    random_hosts: random_one_lb_host
     service_name: haproxy
 
 - include: ../../common/service.yml
   vars:
-    random_hosts: random_two_api_hosts
+    random_hosts: random_two_lb_hosts
     service_name: haproxy
 
 - include: ../../common/service.yml
   vars:
-    random_hosts: random_three_api_hosts
+    random_hosts: random_three_lb_hosts
     service_name: haproxy

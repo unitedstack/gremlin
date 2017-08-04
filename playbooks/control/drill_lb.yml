@@ -1,0 +1,41 @@
+- name: Preparing for lb node tests
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    shuffle_lb_hosts: "{{ groups['lb'] | shuffle }}"
+    lb_group_num: "{{ groups['lb'] | length }}"
+  tasks:
+    - name: Random select one lb host
+      add_host:
+        groups: random_one_lb_host
+        name: "{{ groups['lb'] | random }}"
+      when:
+        - lb_group_num | int >= 1
+
+    - name: Random select two lb hosts
+      add_host:
+        groups: random_two_lb_hosts
+        name: "{{ item }}"
+      with_items:
+        - "{{ shuffle_lb_hosts[:2] }}"
+      when:
+        - lb_group_num | int >= 2
+
+    - name: Random select three lb hosts
+      add_host:
+        groups: random_three_lb_hosts
+        name: "{{ item }}"
+      with_items:
+        - "{{ shuffle_lb_hosts[:3] }}"
+      when:
+        - lb_group_num | int >= 3
+  tags:
+    - lb-pre
+
+- include: haproxy/service.yml
+  tags:
+    - service
+    - lb
+    - lb-service
+    - control

@@ -1,0 +1,41 @@
+- name: Preparing for mq node tests
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    shuffle_mq_hosts: "{{ groups['mq'] | shuffle }}"
+    mq_group_num: "{{ groups['mq'] | length }}"
+  tasks:
+    - name: Random select one mq host
+      add_host:
+        groups: random_one_mq_host
+        name: "{{ groups['mq'] | random }}"
+      when:
+        - mq_group_num | int >= 1
+
+    - name: Random select two mq hosts
+      add_host:
+        groups: random_two_mq_hosts
+        name: "{{ item }}"
+      with_items:
+        - "{{ shuffle_mq_hosts[:2] }}"
+      when:
+        - mq_group_num | int >= 2
+
+    - name: Random select three mq hosts
+      add_host:
+        groups: random_three_mq_hosts
+        name: "{{ item }}"
+      with_items:
+        - "{{ shuffle_mq_hosts[:3] }}"
+      when:
+        - mq_group_num | int >= 3
+  tags:
+    - mq-pre
+
+- include: rabbitmq/service.yml
+  tags:
+    - service
+    - mq
+    - mq-service
+    - control

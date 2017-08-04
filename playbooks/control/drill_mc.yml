@@ -1,0 +1,41 @@
+- name: Preparing for mc node tests
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    shuffle_mc_hosts: "{{ groups['mc'] | shuffle }}"
+    mc_group_num: "{{ groups['mc'] | length }}"
+  tasks:
+    - name: Random select one mc host
+      add_host:
+        groups: random_one_mc_host
+        name: "{{ groups['mc'] | random }}"
+      when:
+        - mc_group_num | int >= 1
+
+    - name: Random select two mc hosts
+      add_host:
+        groups: random_two_mc_hosts
+        name: "{{ item }}"
+      with_items:
+        - "{{ shuffle_mc_hosts[:2] }}"
+      when:
+        - mc_group_num | int >= 2
+
+    - name: Random select three mc hosts
+      add_host:
+        groups: random_three_mc_hosts
+        name: "{{ item }}"
+      with_items:
+        - "{{ shuffle_mc_hosts[:3] }}"
+      when:
+        - mc_group_num | int >= 3
+  tags:
+    - mc-pre
+
+- include: memcache/service.yml
+  tags:
+    - service
+    - mc
+    - mc-service
+    - control

@@ -2,15 +2,15 @@
 
 - include: ../../common/service.yml
   vars:
-    random_hosts: random_one_api_host
+    random_hosts: random_one_mc_host
     service_name: memcached
 
 - include: ../../common/service.yml
   vars:
-    random_hosts: random_two_api_hosts
+    random_hosts: random_two_mc_hosts
     service_name: memcached
 
 - include: ../../common/service.yml
   vars:
-    random_hosts: random_three_api_hosts
+    random_hosts: random_three_mc_hosts
     service_name: memcached

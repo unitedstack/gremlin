@@ -1,0 +1,41 @@
+- name: Preparing for db node tests
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    shuffle_db_hosts: "{{ groups['db'] | shuffle }}"
+    db_group_num: "{{ groups['db'] | length }}"
+  tasks:
+    - name: Random select one db host
+      add_host:
+        groups: random_one_db_host
+        name: "{{ groups['db'] | random }}"
+      when:
+        - db_group_num | int >= 1
+
+    - name: Random select two db hosts
+      add_host:
+        groups: random_two_db_hosts
+        name: "{{ item }}"
+      with_items:
+        - "{{ shuffle_db_hosts[:2] }}"
+      when:
+        - db_group_num | int >= 2
+
+    - name: Random select three db hosts
+      add_host:
+        groups: random_three_db_hosts
+        name: "{{ item }}"
+      with_items:
+        - "{{ shuffle_db_hosts[:3] }}"
+      when:
+        - db_group_num | int >= 3
+  tags:
+    - db-pre
+
+- include: mysql/service.yml
+  tags:
+    - service
+    - db
+    - db-service
+    - control
