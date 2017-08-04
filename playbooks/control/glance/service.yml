@@ -1,0 +1,33 @@
+# Stop and start glance releated services on control node
+
+# glance-api
+- include: ../../common/service.yml
+  vars:
+    random_hosts: random_one_api_host
+    service_name: openstack-glance-api
+
+- include: ../../common/service.yml
+  vars:
+    random_hosts: random_two_api_hosts
+    service_name: openstack-glance-api
+
+- include: ../../common/service.yml
+  vars:
+    random_hosts: random_three_api_hosts
+    service_name: openstack-glance-api
+
+# glance-registry
+- include: ../../common/service.yml
+  vars:
+    random_hosts: random_one_api_host
+    service_name: openstack-glance-registry
+
+- include: ../../common/service.yml
+  vars:
+    random_hosts: random_two_api_hosts
+    service_name: openstack-glance-registry
+
+- include: ../../common/service.yml
+  vars:
+    random_hosts: random_three_api_hosts
+    service_name: openstack-glance-registry

@@ -1,0 +1,49 @@
+# Stop and start cinder releated services on control node
+
+# cinder-api
+- include: ../../common/service.yml
+  vars:
+    random_hosts: random_one_api_host
+    service_name: openstack-cinder-api
+
+- include: ../../common/service.yml
+  vars:
+    random_hosts: random_two_api_hosts
+    service_name: openstack-cinder-api
+
+- include: ../../common/service.yml
+  vars:
+    random_hosts: random_three_api_hosts
+    service_name: openstack-cinder-api
+
+# cinder-volume
+- include: ../../common/service.yml
+  vars:
+    random_hosts: random_one_api_host
+    service_name: openstack-cinder-volume
+
+- include: ../../common/service.yml
+  vars:
+    random_hosts: random_two_api_hosts
+    service_name: openstack-cinder-volume
+
+- include: ../../common/service.yml
+  vars:
+    random_hosts: random_three_api_hosts
+    service_name: openstack-cinder-volume
+
+# cinder-scheduler
+- include: ../../common/service.yml
+  vars:
+    random_hosts: random_one_api_host
+    service_name: openstack-cinder-scheduler
+
+- include: ../../common/service.yml
+  vars:
+    random_hosts: random_two_api_hosts
+    service_name: openstack-cinder-scheduler
+
+- include: ../../common/service.yml
+  vars:
+    random_hosts: random_three_api_hosts
+    service_name: openstack-cinder-scheduler

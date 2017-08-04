@@ -1,0 +1,16 @@
+# Stop and start mariadb releated services on control node
+
+- include: ../../common/service.yml
+  vars:
+    random_hosts: random_one_api_host
+    service_name: mysql
+
+- include: ../../common/service.yml
+  vars:
+    random_hosts: random_two_api_hosts
+    service_name: mysql
+
+- include: ../../common/service.yml
+  vars:
+    random_hosts: random_three_api_hosts
+    service_name: mysql
