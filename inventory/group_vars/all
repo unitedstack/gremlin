@@ -1,2 +1,9 @@
 manage_packages: true
 mgmt_nic_name: "eth0"
+
+stress_mysql_time: 300
+stress_mysql_host: localhost
+sysbench_threads: 1000
+sysbench_user: sysbench
+sysbench_password: sysbench
+sysbench_database: sysbench
