@@ -1,0 +1,6 @@
+# System Level
+
+- include: ../system/base.yml
+  vars:
+    random_hosts: random_one_compute_host
+    node_group: compute

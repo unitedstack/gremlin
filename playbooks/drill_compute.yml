@@ -1,0 +1,27 @@
+- name: Preparing for compute node tests
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    compute_group_num: "{{ groups['compute'] | length }}"
+  tasks:
+    - name: Random select one compute host
+      add_host:
+        groups: random_one_compute_host
+        name: "{{ groups['compute'] | random }}"
+      when:
+        - compute_group_num | int >= 1
+  tags:
+    - compute-pre
+
+- include: compute/system.yml
+  tags:
+    - system
+    - compute
+    - compute-system
+
+- include: compute/service.yml
+  tags:
+    - service
+    - compute
+    - compute-service

@@ -1,0 +1,40 @@
+## Service Level
+
+# Stop and start nova releated services on compute node
+- include: ../common/service.yml
+  vars:
+    random_hosts: random_one_compute_host
+    service_name: openstack-nova-compute
+  tags:
+    - nova
+    - nova-compute-down
+
+
+# Stop and start libvirt releated services on compute node
+- include: ../common/service.yml
+  vars:
+    random_hosts: random_one_compute_host
+    service_name: libvirtd
+  tags:
+    - libvirtd
+    - libvirtd-down
+
+
+# Stop and start Neutron Open vSwitch agent services on compute node
+- include: ../common/service.yml
+  vars:
+    random_hosts: random_one_compute_host
+    service_name: neutron-openvswitch-agent
+  tags:
+    - ovs-agent
+    - compute-ovs-agent-down
+
+
+# Stop and start Open vSwitch services on compute node
+- include: ../common/service.yml
+  vars:
+    random_hosts: random_one_compute_host
+    service_name: openvswitch-nonetwork
+  tags:
+    - ovs
+    - compute-ovs-down
