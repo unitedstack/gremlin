@@ -1,0 +1,26 @@
+# This playbook will do specified service drill test cases, and if
+# in manual mode, it will prompt to ask if you want to recover it.
+
+- name: "CASE: Start to stress RabbitMQ"
+  hosts: localhost 
+  gather_facts: true
+  tasks:
+    - include_role:
+        name: control
+        tasks_from: stress_mq
+
+- include: ../../common/ask.yml
+
+- name: Recover fault
+  hosts: random_one_mq_host
+  gather_facts: false
+  tasks:
+    - block:
+        - include_role:
+            name: control
+            tasks_from: purge_queue
+      vars:
+        - recovery: "{{ hostvars['localhost']['recovery'] }}"
+      when: mode == "auto" or recovery == "y" or recovery == "yes" 
+
+- include: ../../common/next.yml

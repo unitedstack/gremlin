@@ -49,7 +49,7 @@
 # Nic delay(Management Network)
 - include: ../system/nic_delay.yml
   vars:
-    nic_delay_time: "200ms"
+    nic_delay_time: "300ms"
     nic_delay_timeout: "5m"
     nic: "{{ mgmt_nic_name }}"
     random_hosts: random_one_db_host

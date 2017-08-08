@@ -1,0 +1,5 @@
+- name: Purge RabbitMQ queue
+  shell: >
+    /usr/local/bin/rabbitmqadmin purge queue name={{ rabbit_queue }}
+    --username={{ rabbit_username }} --password={{ rabbit_password }}
+  become: true

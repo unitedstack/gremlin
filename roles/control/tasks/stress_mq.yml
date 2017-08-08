@@ -1,0 +1,14 @@
+- name: Install pika
+  package:
+    name: python-pika
+    state: present
+  become: true
+  when: manage_packages|default(false)
+
+- name: Stress RabbitMQ
+  script: "stress_mq.py -H {{ rabbit_host }} -u {{ rabbit_username }} -p {{ rabbit_password }}
+           --rabbit-exchange {{ rabbit_exchange }} --exchange-durable {{ exchange_durable }}
+           --exchange-auto-delete {{ exchange_auto_delete}} --rabbit-queue {{ rabbit_queue }}
+           --queue-durable {{ queue_durable }} --queue-auto-delete {{ queue_auto_delete }}
+           --routing-key {{ routing_key }} -t {{ threads }} -n {{ msg_per_thread }}"
+  become: true
