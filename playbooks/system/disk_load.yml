@@ -2,7 +2,7 @@
 
 - name: "CASE: Stress {{ node_group }} host root file system load to {{ disk_stress_load }} for {{ disk_stress_timeout }}"
   hosts: "{{ random_hosts }}"
-  gather_facts: false
+  gather_facts: true
   tasks:
     - include_role:
         name: system

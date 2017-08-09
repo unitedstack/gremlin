@@ -2,7 +2,7 @@
 
 - name: "CASE: Stress {{ node_group }} host memory load to {{ mem_stress_load }} for {{ mem_stress_timeout }}"
   hosts: "{{ random_hosts }}"
-  gather_facts: false
+  gather_facts: true
   tasks:
     - include_role:
         name: system
