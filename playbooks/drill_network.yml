@@ -1,0 +1,46 @@
+- name: Preparing for network node tests
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    shuffle_network_hosts: "{{ groups['network'] | shuffle }}"
+    network_group_num: "{{ groups['network'] | length }}"
+  tasks:
+    - name: Random select one network host
+      add_host:
+        groups: random_one_network_host
+        name: "{{ groups['network'] | random }}"
+      when:
+        - network_group_num | int >= 1
+
+    - name: Random select two network hosts
+      add_host:
+        groups: random_two_network_hosts
+        name: "{{ item }}"
+      with_items:
+        - "{{ shuffle_network_hosts[:2] }}"
+      when:
+        - network_group_num | int >= 2
+
+    - name: Random select three network hosts
+      add_host:
+        groups: random_three_network_hosts
+        name: "{{ item }}"
+      with_items:
+        - "{{ shuffle_network_hosts[:3] }}"
+      when:
+        - network_group_num | int >= 3
+  tags:
+    - network-pre
+
+- include: network/system.yml
+  tags:
+    - system
+    - network
+    - network-system
+
+- include: network/service.yml
+  tags:
+    - service
+    - network
+    - network-system

@@ -1,3 +1,4 @@
 - include: drill_storage.yml
 - include: drill_control.yml
 - include: drill_compute.yml
+- include: drill_network.yml

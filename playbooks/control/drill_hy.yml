@@ -1,4 +1,4 @@
-- name: Preparing for control node tests
+- name: Preparing for control hyper node tests
   hosts: localhost
   connection: local
   gather_facts: false
