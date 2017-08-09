@@ -4,3 +4,61 @@
   vars:
     random_hosts: random_one_compute_host
     node_group: compute
+
+# Nic delay(Tenant Network)
+- include: ../system/nic_delay.yml
+  vars:
+    nic_delay_time: "300ms"
+    nic_delay_timeout: "5m"
+    nic: "{{ tenant_nic_name }}"
+    random_hosts: random_one_compute_host
+  tags:
+    - tenant-nic-delay
+
+# Nic package loss(Tenant Network)
+- include: ../system/nic_loss.yml
+  vars:
+    nic_loss_percent: "80%"
+    nic_loss_timeout: "5m"
+    nic: "{{ tenant_nic_name }}"
+    random_hosts: random_one_compute_host
+  tags:
+    - tenant-nic-loss
+
+# Nic down(Tenant Network)
+- include: ../system/nic_down.yml
+  vars:
+    nic_down_timeout: "5m"
+    nic: "{{ tenant_nic_name }}"
+    random_hosts: random_one_compute_host
+  tags:
+    - tenant-nic-down
+
+# Nic delay(Storage Network)
+- include: ../system/nic_delay.yml
+  vars:
+    nic_delay_time: "300ms"
+    nic_delay_timeout: "5m"
+    nic: "{{ storage_nic_name }}"
+    random_hosts: random_one_compute_host
+  tags:
+    - storage-nic-delay
+
+# Nic package loss(Storage Network)
+- include: ../system/nic_loss.yml
+  vars:
+    nic_loss_percent: "80%"
+    nic_loss_timeout: "5m"
+    nic: "{{ storage_nic_name }}"
+    random_hosts: random_one_compute_host
+  tags:
+    - storage-nic-loss
+
+# Nic down(Storage Network)
+- include: ../system/nic_down.yml
+  vars:
+    nic_down_timeout: "5m"
+    nic: "{{ storage_nic_name }}"
+    random_hosts: random_one_compute_host
+  tags:
+    - storage-nic-down
