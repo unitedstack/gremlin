@@ -60,7 +60,7 @@
 # Nic delay(Management Network)
 - include: nic_delay.yml
   vars:
-    nic_delay_time: "100ms"
+    nic_delay_time: "200ms"
     nic_delay_timeout: "5m"
     nic: "{{ mgmt_nic_name }}"
   tags:
@@ -68,7 +68,7 @@
 
 - include: nic_delay.yml
   vars:
-    nic_delay_time: "200ms"
+    nic_delay_time: "300ms"
     nic_delay_timeout: "5m"
     nic: "{{ mgmt_nic_name }}"
   tags:
