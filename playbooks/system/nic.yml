@@ -1,0 +1,24 @@
+# This playbook is generally to test a nic in data-plance
+
+# Nic delay(Storage Network)
+- include: nic_delay.yml
+  vars:
+    nic_delay_time: "300ms"
+    nic_delay_timeout: "5m"
+  tags:
+    - "{{ node_group }}-{{ nic_type }}-nic-delay"
+
+# Nic package loss(Storage Network)
+- include: nic_loss.yml
+  vars:
+    nic_loss_percent: "80%"
+    nic_loss_timeout: "5m"
+  tags:
+    - "{{ node_group }}-{{ nic_type }}-nic-loss"
+
+# Nic down(Storage Network)
+- include: nic_down.yml
+  vars:
+    nic_down_timeout: "5m"
+  tags:
+    - "{{ node_group }}-{{ nic_type }}-nic-down"

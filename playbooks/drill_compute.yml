@@ -11,6 +11,24 @@
         name: "{{ groups['compute'] | random }}"
       when:
         - compute_group_num | int >= 1
+
+    - name: Random select two compute hosts
+      add_host:
+        groups: random_two_compute_hosts
+        name: "{{ item }}"
+      with_items:
+        - "{{ shuffle_compute_hosts[:2] }}"
+      when:
+        - compute_group_num | int >= 2
+
+    - name: Random select three compute hosts
+      add_host:
+        groups: random_three_compute_hosts
+        name: "{{ item }}"
+      with_items:
+        - "{{ shuffle_compute_hosts[:3] }}"
+      when:
+        - compute_group_num | int >= 3
   tags:
     - compute-pre
 

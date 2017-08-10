@@ -1,0 +1,7 @@
+# For RabbitMQ Cluster, we mainly test network partition
+- include: ../../system/nic.yml
+  vars:
+    random_hosts: random_one_mq_host
+    node_group: mq
+    nic_type: mgmt
+    nic: "{{ mgmt_nic_name }}"

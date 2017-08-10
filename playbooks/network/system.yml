@@ -4,60 +4,16 @@
     random_hosts: random_one_network_host
     node_group: network
 
-# Nic delay(Tenant Network)
-- include: ../system/nic_delay.yml
+- include: ../system/nic.yml
   vars:
-    nic_delay_time: "300ms"
-    nic_delay_timeout: "5m"
+    random_hosts: random_one_network_host
+    node_group: network
+    nic_type: tenant
     nic: "{{ tenant_nic_name }}"
-    random_hosts: random_one_network_host
-  tags:
-    - tenant-nic-delay
 
-# Nic package loss(Tenant Network)
-- include: ../system/nic_loss.yml
+- include: ../system/nic.yml
   vars:
-    nic_loss_percent: "80%"
-    nic_loss_timeout: "5m"
-    nic: "{{ tenant_nic_name }}"
     random_hosts: random_one_network_host
-  tags:
-    - tenant-nic-loss
-
-# Nic down(Tenant Network)
-- include: ../system/nic_down.yml
-  vars:
-    nic_down_timeout: "5m"
-    nic: "{{ tenant_nic_name }}"
-    random_hosts: random_one_network_host
-  tags:
-    - tenant-nic-down
-
-# Nic delay(External Network)
-- include: ../system/nic_delay.yml
-  vars:
-    nic_delay_time: "300ms"
-    nic_delay_timeout: "5m"
+    node_group: network
+    nic_type: external
     nic: "{{ external_nic_name }}"
-    random_hosts: random_one_network_host
-  tags:
-    - external-nic-delay
-
-# Nic package loss(External Network)
-- include: ../system/nic_loss.yml
-  vars:
-    nic_loss_percent: "80%"
-    nic_loss_timeout: "5m"
-    nic: "{{ external_nic_name }}"
-    random_hosts: random_one_network_host
-  tags:
-    - external-nic-loss
-
-# Nic down(External Network)
-- include: ../system/nic_down.yml
-  vars:
-    nic_down_timeout: "5m"
-    nic: "{{ external_nic_name }}"
-    random_hosts: random_one_network_host
-  tags:
-    - external-nic-down

@@ -8,6 +8,13 @@
     ceph_client_host: "{{ groups['storage'][0] }}"
     osd_down_precentage: 30
   tasks:
+    - name: Random select one osd host
+      add_host:
+        groups: random_one_osd_host
+        name: "{{ groups['osd'] | random }}"
+      when:
+        - osd_group_num | int >= 1
+
     - name: Copy get-random-osd.py to storage node
       copy: 
         src: "{{ get_osd_script_path }}"
@@ -109,6 +116,16 @@
     - osd
     - osd-system
 
+- include: ../system/nic.yml
+  vars:
+    random_hosts: random_one_osd_host
+    node_group: osd
+    nic_type: storage
+    nic: "{{ storage_nic_name }}"
+  tags:
+    - system
+    - osd
+    - osd-system
 
 ## Service Level
 - include: osd/kill_osd.yml

@@ -1,0 +1,7 @@
+# For MySQL Cluster, we mainly test network partition
+- include: ../../system/nic.yml
+  vars:
+    random_hosts: random_one_db_host
+    node_group: db
+    nic_type: mgmt
+    nic: "{{ mgmt_nic_name }}"

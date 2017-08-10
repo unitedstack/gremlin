@@ -42,48 +42,12 @@
 
 # We mainly test the impact to the RabbitMQ cluster when
 # there are network problems
-
-# Nic delay(Management Network)
-- include: ../system/nic_delay.yml
-  vars:
-    nic_delay_time: "300ms"
-    nic_delay_timeout: "5m"
-    nic: "{{ mgmt_nic_name }}"
-    random_hosts: random_one_mq_host
+- include: rabbitmq/system.yml
   tags:
-    - mq-mgmt-nic-delay
-    - service
+    - system
     - mq
-    - mq-service
+    - mq-system
     - control
-
-# Nic package loss(Management Network)
-- include: ../system/nic_loss.yml
-  vars:
-    nic_loss_percent: "80%"
-    nic_loss_timeout: "5m"
-    nic: "{{ mgmt_nic_name }}"
-    random_hosts: random_one_mq_host
-  tags:
-    - mq-mgmt-nic-loss
-    - service
-    - mq
-    - mq-service
-    - control
-
-# Nic down(Management Network)
-- include: ../system/nic_down.yml
-  vars:
-    nic_down_timeout: "5m"
-    nic: "{{ mgmt_nic_name }}"
-    random_hosts: random_one_mq_host
-  tags:
-    - mq-mgmt-nic-down
-    - service
-    - mq
-    - mq-service
-    - control
-
 
 # Stress RabbitMQ Cluster
 - include: rabbitmq/stress.yml
