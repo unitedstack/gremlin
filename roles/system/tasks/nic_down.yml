@@ -1,6 +1,6 @@
 - name: ifdown the nic
   shell: >
     ifdown {{ nic }};
-    sleep {{ nic_delay_timeout }};
+    sleep {{ nic_down_timeout }};
     ifup {{ nic }};
   become: true
