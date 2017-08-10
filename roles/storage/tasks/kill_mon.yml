@@ -2,14 +2,16 @@
    - name: Kill ceph monitor daemon
      shell: pkill ceph-mon
      become: true
+     ignore_errors: true
 
    - name: Check if ceph monitor was killed
-     shell: pgrep ceph-mon
+     shell: "ps -ef | grep ceph-mon"
      register: ps_result
+     become: true
 
    - fail:
        msg: "Failed to kill ceph monitor daemon"
-     when: ps_result.stdout != ""
+     when: "'/usr/bin/ceph-mon' in ps_result.stdout"
 
   always:
    - name: Waiting 10 seconds to warm down

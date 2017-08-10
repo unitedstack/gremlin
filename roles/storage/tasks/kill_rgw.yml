@@ -2,10 +2,12 @@
    - name: Kill Ceph radosgw daemon
      command: "pkill radosgw"
      become: true
+     ignore_errors: true
 
    - name: Check if ceph radosgw was killed
      shell: "ps -ef | grep radosgw"
      register: ps_result
+     ignore_errors: true
 
    - fail:
        msg: "Failed to kill Ceph radosgw daemon"

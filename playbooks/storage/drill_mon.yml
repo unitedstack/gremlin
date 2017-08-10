@@ -44,7 +44,6 @@
     - mon
     - mon-system
 
-
 ## Service Level
 - include: mon/kill_mon.yml
   vars:

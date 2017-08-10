@@ -1,7 +1,14 @@
-- name: Will execute the next test case?
+- name: "{{ case_name }}"
   hosts: localhost
   gather_facts: false
   tasks:
-    - pause:
+    - set_fact:
+        execute: true
+    - block:
+        - pause:
+            prompt: "Will execute this case? (y|yes, n|no)"
+          register: _execute
+        - set_fact:
+            execute: "{{ _execute.user_input }}"
       when:
         - mode == "manual"

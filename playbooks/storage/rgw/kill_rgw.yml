@@ -2,26 +2,34 @@
 # in manual mode, it will prompt to ask if you want to recover
 # it.
 
-- name: "CASE: Ceph radosgw down on {{ random_hosts }}"
+- include: ../../common/next.yml
+  vars:
+    case_name: "CASE: Ceph radosgw down on {{ random_hosts }}"
+
+- name: "Drill the case"
   hosts: "{{ random_hosts }}"
   gather_facts: false
+  vars:
+    execute: "{{ hostvars['localhost']['execute'] }}"
   tasks:
     - include_role:
         name: storage
         tasks_from: kill_rgw
+      when:
+        - execute == "y" or execute == true
 
 - include: ../../common/ask.yml
 
-- name: Recover fault
+- name: "Recover the fault"
   hosts: "{{ random_hosts }}"
   gather_facts: true
+  vars:
+    execute: "{{ hostvars['localhost']['execute'] }}"
+    recovery: "{{ hostvars['localhost']['recovery'] }}"
   tasks:
-    - block:
-        - include_role:
-            name: storage
-            tasks_from: start_rgw
-      vars:
-        - recovery: "{{ hostvars['localhost']['recovery'] }}"
-      when: mode == "auto" or recovery == "y" or recovery == "yes" 
-
-- include: ../../common/next.yml
+    - include_role:
+        name: storage
+        tasks_from: start_rgw
+      when:
+        - mode == "auto" or recovery == "y" or recovery == "yes"
+        - execute == "y" or execute == true

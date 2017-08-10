@@ -1,61 +1,15 @@
-- name: Stress MySQL Cluster using sysbench
-  hosts: localhost
-  tasks:
-    - name: Install sysbench
-      package:
-        name: sysbench
-        state: present
-      become: true
-      when: manage_packages|default(false)
-
-- name: Delete sysbench database, user and grant priviledges first
-  hosts: random_one_db_host
-  tasks:
-    - shell: >
-        mysql -e "revoke all on sysbench.* from {{ sysbench_user }}@'%'";
-        mysql -e "drop user {{ sysbench_user }}@'%'";
-        mysql -e "drop database sysbench";
-      become: true
-      ignore_errors: true
-
-- name: Create sysbench database, user, and grant priviledges
-  hosts: random_one_db_host
-  tasks:
-    - shell: >
-        mysql -e "create database sysbench";
-        mysql -e "create user '{{ sysbench_user }}'@'%' identified by '{{ sysbench_password }}'";
-        mysql -e "grant all on {{ sysbench_user }}.* to sysbench@'%' identified by '{{ sysbench_password }}';";
-      become: true
-
-- name: Stress MySQL Cluster
-  hosts: localhost
-  tasks:
-    - name: Prepare
-      shell: >
-        sysbench --time={{ stress_mysql_time }} --threads={{ sysbench_threads }} --mysql-user={{ sysbench_user }}
-        --mysql-password={{ sysbench_password }} --mysql-db={{ sysbench_database }} --mysql-host={{ stress_mysql_host}}
-        --db-driver=mysql --table_size=500000
-        /usr/share/sysbench/oltp_read_write.lua prepare
-    - name: Run
-      shell: >
-        sysbench --time={{ stress_mysql_time }} --threads={{ sysbench_threads }} --mysql-user={{ sysbench_user }}
-        --mysql-password={{ sysbench_password }} --mysql-db={{ sysbench_database }} --mysql-host={{ stress_mysql_host}}
-        --db-driver=mysql --table_size=500000
-        /usr/share/sysbench/oltp_read_write.lua run
-    - name: Cleanup
-      shell: >
-        sysbench --time={{ stress_mysql_time }} --threads={{ sysbench_threads }} --mysql-user={{ sysbench_user }}
-        --mysql-password={{ sysbench_password }} --mysql-db={{ sysbench_database }} --mysql-host={{ stress_mysql_host}}
-        --db-driver=mysql --table_size=500000
-        /usr/share/sysbench/oltp_read_write.lua cleanup
-
-- name: Delete sysbench database, user and grant priviledges
-  hosts: random_one_db_host
-  tasks:
-    - shell: >
-        mysql -e "revoke all on sysbench.* from {{ sysbench_user }}@'%'";
-        mysql -e "drop user {{ sysbench_user }}@'%'";
-        mysql -e "drop database sysbench";
-      become: true
-
 - include: ../../common/next.yml
+  vars:
+    case_name: "Stress MySQL Cluster using sysbench"
+
+- name: "Drill the case"
+  hosts: random_one_db_host
+  gather_facts: false
+  vars:
+    execute: "{{ hostvars['localhost']['execute'] }}"
+  tasks:
+    - include_role:
+        name: control
+        tasks_from: stress_db
+      when:
+        - execute == "y" or execute == true

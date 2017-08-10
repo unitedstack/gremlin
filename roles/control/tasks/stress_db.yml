@@ -1,0 +1,54 @@
+- name: Install sysbench
+  package:
+    name: sysbench
+    state: present
+  delegate_to: localhost
+  become: true
+  when: manage_packages|default(false)
+
+- name: Delete sysbench database, user and grant priviledges first
+  shell: >
+    mysql -e "revoke all on sysbench.* from {{ sysbench_user }}@'%'";
+    mysql -e "drop user {{ sysbench_user }}@'%'";
+    mysql -e "drop database sysbench";
+  become: true
+  ignore_errors: true
+
+- name: Create sysbench database, user and grant priviledges first
+  shell: >
+    mysql -e "create database sysbench";
+    mysql -e "create user '{{ sysbench_user }}'@'%' identified by '{{ sysbench_password }}'";
+    mysql -e "grant all on {{ sysbench_user }}.* to sysbench@'%' identified by '{{ sysbench_password }}';";
+  become: true
+
+- name: Stress MySQL Cluster - Prepare 
+  shell: >
+    sysbench --time={{ stress_mysql_time }} --threads={{ sysbench_threads }} --mysql-user={{ sysbench_user }}
+    --mysql-password={{ sysbench_password }} --mysql-db={{ sysbench_database }} --mysql-host={{ stress_mysql_host}}
+    --db-driver=mysql --table_size=500000
+    /usr/share/sysbench/oltp_read_write.lua prepare
+  delegate_to: localhost
+
+- name: Stress MySQL Cluster - Run
+  shell: >
+    sysbench --time={{ stress_mysql_time }} --threads={{ sysbench_threads }} --mysql-user={{ sysbench_user }}
+    --mysql-password={{ sysbench_password }} --mysql-db={{ sysbench_database }} --mysql-host={{ stress_mysql_host}}
+    --db-driver=mysql --table_size=500000
+    /usr/share/sysbench/oltp_read_write.lua run
+  delegate_to: localhost
+
+- name: Stress MySQL Cluster - Cleanup
+  shell: >
+    sysbench --time={{ stress_mysql_time }} --threads={{ sysbench_threads }} --mysql-user={{ sysbench_user }}
+    --mysql-password={{ sysbench_password }} --mysql-db={{ sysbench_database }} --mysql-host={{ stress_mysql_host}}
+    --db-driver=mysql --table_size=500000
+    /usr/share/sysbench/oltp_read_write.lua cleanup
+  delegate_to: localhost
+
+- name: Delete sysbench database, user and grant priviledges
+  shell: >
+    mysql -e "revoke all on sysbench.* from {{ sysbench_user }}@'%'";
+    mysql -e "drop user {{ sysbench_user }}@'%'";
+    mysql -e "drop database sysbench";
+  become: true
+  ignore_errors: true

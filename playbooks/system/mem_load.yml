@@ -1,11 +1,17 @@
 # This playbook will do mem stress load on specified node
 
-- name: "CASE: Stress {{ node_group }} host memory load to {{ mem_stress_load }} for {{ mem_stress_timeout }}"
+- include: ../common/next.yml
+  vars:
+    case_name: "CASE: Stress {{ node_group }} host memory load to {{ mem_stress_load }} for {{ mem_stress_timeout }} on {{ random_hosts }}"
+
+- name: "Drill the case"
   hosts: "{{ random_hosts }}"
   gather_facts: true
+  vars:
+    execute: "{{ hostvars['localhost']['execute'] }}"
   tasks:
     - include_role:
         name: system
         tasks_from: mem_load
-
-- include: ../common/next.yml
+      when:
+        - execute == "y" or execute == true

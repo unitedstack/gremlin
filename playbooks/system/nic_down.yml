@@ -1,11 +1,17 @@
 # This playbook will down specified nic on specified node
 
-- name: "CASE: Set {{ node_group }} host {{ nic }} down for {{ nic_down_timeout }}"
+- include: ../common/next.yml
+  vars:
+    case_name: "CASE: Set {{ node_group }} host {{ nic }} down for {{ nic_down_timeout }} on {{ random_hosts }}"
+
+- name: "Drill the case"
   hosts: "{{ random_hosts }}"
   gather_facts: false
+  vars:
+    execute: "{{ hostvars['localhost']['execute'] }}"
   tasks:
     - include_role:
         name: system
         tasks_from: nic_down
-
-- include: ../common/next.yml
+      when:
+        - execute == "y" or execute == true
