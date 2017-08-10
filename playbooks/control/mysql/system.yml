@@ -5,3 +5,5 @@
     node_group: db
     nic_type: mgmt
     nic: "{{ mgmt_nic_name }}"
+  tags:
+    - db-mgmt-nic

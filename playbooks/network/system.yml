@@ -10,6 +10,8 @@
     node_group: network
     nic_type: tenant
     nic: "{{ tenant_nic_name }}"
+  tags:
+    - network-tenant-nic
 
 - include: ../system/nic.yml
   vars:
@@ -17,3 +19,21 @@
     node_group: network
     nic_type: external
     nic: "{{ external_nic_name }}"
+  tags:
+    - network-external-nic
+
+- include: ../common/port.yml
+  vars:
+    random_hosts: random_one_network_host
+    ovs_port: "{{ physical_network_bridge_port }}"
+    ovs_bridge: "{{ physical_network_bridge }}"
+  tags:
+    - network-physical-network-port
+
+- include: ../common/port.yml
+  vars:
+    random_hosts: random_one_network_host
+    ovs_port: "{{ external_network_bridge_port }}"
+    ovs_bridge: "{{ external_network_bridge }}"
+  tags:
+    - network-external-network-port

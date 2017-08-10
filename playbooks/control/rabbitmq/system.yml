@@ -5,3 +5,5 @@
     node_group: mq
     nic_type: mgmt
     nic: "{{ mgmt_nic_name }}"
+  tags:
+    - mq-mgmt-nic

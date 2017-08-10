@@ -1,0 +1,4 @@
+- name: Delete a port from a ovs bridge
+  shell: >
+    ovs-vsctl del-port {{ ovs_bridge }} {{ ovs_port }}
+  become: true

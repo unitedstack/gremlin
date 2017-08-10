@@ -1,0 +1,4 @@
+- name: Add a port to a ovs bridge
+  shell: >
+    ovs-vsctl add-port {{ ovs_bridge }} {{ ovs_port }}
+  become: true

@@ -126,6 +126,7 @@
     - system
     - osd
     - osd-system
+    - osd-storage-nic
 
 ## Service Level
 - include: osd/kill_osd.yml

@@ -10,6 +10,8 @@
     node_group: compute
     nic_type: tenant
     nic: "{{ tenant_nic_name }}"
+  tags:
+    - compute-tenant-nic
 
 - include: ../system/nic.yml
   vars:
@@ -17,3 +19,5 @@
     node_group: compute
     nic_type: storage
     nic: "{{ storage_nic_name }}"
+  tags:
+    - compute-storage-nic

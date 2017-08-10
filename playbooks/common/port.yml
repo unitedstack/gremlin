@@ -1,0 +1,26 @@
+# This playbook will do specified port drill test cases, and if
+# in manual mode, it will prompt to ask if you want to recover it.
+
+- name: "CASE: Delete {{ ovs_port }} port from {{ ovs_bridge }} on {{ random_hosts }}"
+  hosts: "{{ random_hosts }}"
+  gather_facts: false
+  tasks:
+    - include_role:
+        name: common
+        tasks_from: port_del
+
+- include: ask.yml
+
+- name: Recover fault
+  hosts: "{{ random_hosts }}"
+  gather_facts: false
+  tasks:
+    - block:
+        - include_role:
+            name: common
+            tasks_from: port_add
+      vars:
+        - recovery: "{{ hostvars['localhost']['recovery'] }}"
+      when: mode == "auto" or recovery == "y" or recovery == "yes" 
+
+- include: next.yml

@@ -11,3 +11,9 @@ sysbench_threads: 1000
 sysbench_user: sysbench
 sysbench_password: sysbench
 sysbench_database: sysbench
+
+physical_network_bridge: ovsbr3
+physical_network_bridge_port: eth0
+
+external_network_bridge: br-ex
+external_network_bridge_port: eth0
