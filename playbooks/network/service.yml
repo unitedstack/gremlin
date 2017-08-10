@@ -1,44 +1,88 @@
 ## Service Level
 # Stop and start neutron releated services on network node
 
+# neutron-dhcp-agent
 - include: ../common/service.yml
   vars:
     random_hosts: random_one_network_host
     service_name: neutron-dhcp-agent
-  tags:
-    - neutron
 
+- include: ../common/service.yml
+  vars:
+    random_hosts: random_two_network_hosts
+    service_name: neutron-dhcp-agent
+
+- include: ../common/service.yml
+  vars:
+    random_hosts: random_three_network_hosts
+    service_name: neutron-dhcp-agent
+
+# neutron-lbaasv2-agent
 - include: ../common/service.yml
   vars:
     random_hosts: random_one_network_host
     service_name: neutron-lbaasv2-agent
-  tags:
-    - neutron
 
+- include: ../common/service.yml
+  vars:
+    random_hosts: random_two_network_hosts
+    service_name: neutron-lbaasv2-agent
+
+- include: ../common/service.yml
+  vars:
+    random_hosts: random_three_network_hosts
+    service_name: neutron-lbaasv2-agent
+
+# neutron-metadata-agent
 - include: ../common/service.yml
   vars:
     random_hosts: random_one_network_host
     service_name: neutron-metadata-agent
-  tags:
-    - neutron
 
+- include: ../common/service.yml
+  vars:
+    random_hosts: random_two_network_hosts
+    service_name: neutron-metadata-agent
+
+- include: ../common/service.yml
+  vars:
+    random_hosts: random_three_network_hosts
+    service_name: neutron-metadata-agent
+
+# neutron-openvswitch-agent
 - include: ../common/service.yml
   vars:
     random_hosts: random_one_network_host
     service_name: neutron-openvswitch-agent
-  tags:
-    - neutron
 
+- include: ../common/service.yml
+  vars:
+    random_hosts: random_two_network_hosts
+    service_name: neutron-openvswitch-agent
+
+- include: ../common/service.yml
+  vars:
+    random_hosts: random_three_network_hosts
+    service_name: neutron-openvswitch-agent
+
+# neutron-vpn-agent
 - include: ../common/service.yml
   vars:
     random_hosts: random_one_network_host
     service_name: neutron-vpn-agent
-  tags:
-    - neutron
 
+- include: ../common/service.yml
+  vars:
+    random_hosts: random_two_network_hosts
+    service_name: neutron-vpn-agent
+
+- include: ../common/service.yml
+  vars:
+    random_hosts: random_three_network_hosts
+    service_name: neutron-vpn-agent
+
+# openvswitch-nonetwork
 - include: ../common/service.yml
   vars:
     random_hosts: random_one_network_host
     service_name: openvswitch-nonetwork # ovs-xxx
-  tags:
-    - neutron
