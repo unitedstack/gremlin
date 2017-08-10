@@ -17,6 +17,15 @@
   vars:
     random_hosts: random_one_compute_host
     node_group: compute
+    nic_type: provider
+    nic: "{{ provider_nic_name }}"
+  tags:
+    - compute-provider-nic
+
+- include: ../system/nic.yml
+  vars:
+    random_hosts: random_one_compute_host
+    node_group: compute
     nic_type: storage
     nic: "{{ storage_nic_name }}"
   tags:

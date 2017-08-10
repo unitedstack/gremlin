@@ -1,6 +1,7 @@
 manage_packages: true
 mgmt_nic_name: "eth0"
 tenant_nic_name: "eth0"
+provider_nic_name: "eth0"
 external_nic_name: "eth0"
 storage_nic_name: "eth0"
 storage_mgmt_nic_name: "eth0"
@@ -17,3 +18,7 @@ physical_network_bridge_port: eth0
 
 external_network_bridge: br-ex
 external_network_bridge_port: eth0
+
+rabbit_host: localhost
+rabbit_username: guest
+rabbit_password: guest

@@ -17,6 +17,15 @@
   vars:
     random_hosts: random_one_network_host
     node_group: network
+    nic_type: provider
+    nic: "{{ provider_nic_name }}"
+  tags:
+    - network-provider-nic
+
+- include: ../system/nic.yml
+  vars:
+    random_hosts: random_one_network_host
+    node_group: network
     nic_type: external
     nic: "{{ external_nic_name }}"
   tags:

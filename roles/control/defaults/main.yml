@@ -5,7 +5,7 @@ rabbit_exchange: gremlin
 exchange_durable: False
 exchange_auto_delete: False
 rabbit_queue: notifications.info
-queue_durable: False
+queue_durable: True
 queue_auto_delete: False
 routing_key: notifications.info
 threads: 100
