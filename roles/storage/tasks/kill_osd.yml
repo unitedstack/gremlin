@@ -10,7 +10,7 @@
    - name: Use Systemd to kill Ceph OSD daemon
      command: "systemctl kill ceph-osd@{{ item }}"
      args:
-       creates: "/var/run/ceph/osd/{{ item }}.pid"
+       creates: "/var/run/ceph/osd.{{ item }}.pid"
      become: true
      with_items:
        - "{{ osd_down_list }}"
