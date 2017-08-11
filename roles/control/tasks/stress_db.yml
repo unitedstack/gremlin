@@ -28,6 +28,7 @@
     --db-driver=mysql --table_size=500000
     /usr/share/sysbench/oltp_read_write.lua prepare
   delegate_to: localhost
+  ignore_errors: true
 
 - name: Stress MySQL Cluster - Run
   shell: >
@@ -36,6 +37,7 @@
     --db-driver=mysql --table_size=500000
     /usr/share/sysbench/oltp_read_write.lua run
   delegate_to: localhost
+  ignore_errors: true
 
 - name: Stress MySQL Cluster - Cleanup
   shell: >
@@ -44,6 +46,7 @@
     --db-driver=mysql --table_size=500000
     /usr/share/sysbench/oltp_read_write.lua cleanup
   delegate_to: localhost
+  ignore_errors: true
 
 - name: Delete sysbench database, user and grant priviledges
   shell: >

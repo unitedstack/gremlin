@@ -4,6 +4,7 @@
   gather_facts: false
   vars:
     compute_group_num: "{{ groups['compute'] | length }}"
+    shuffle_compute_hosts: "{{ groups['compute'] | shuffle }}"
   tasks:
     - name: Random select one compute host
       add_host:
