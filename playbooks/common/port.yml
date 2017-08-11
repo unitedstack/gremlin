@@ -30,5 +30,5 @@
         name: common
         tasks_from: port_add
       when:
-        - mode == "auto" or recovery == "y" or recovery == "yes"
+        - mode == "auto" or recovery == "y" or recovery == true
         - execute == "y" or execute == true
