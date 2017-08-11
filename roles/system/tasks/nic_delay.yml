@@ -2,5 +2,5 @@
   shell: >
     tc qdisc add dev {{ nic }} root netem delay {{ nic_delay_time }};
     sleep {{ nic_delay_timeout }};
-    tc qdisc del dev {{ nic }} root;
+    tc qdisc del dev {{ nic }} root netem delay {{ nic_delay_time }};
   become: true

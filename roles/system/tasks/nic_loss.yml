@@ -2,5 +2,5 @@
   shell: >
     tc qdisc add dev {{ nic }} root netem loss {{ nic_loss_percent }};
     sleep {{ nic_loss_timeout }};
-    tc qdisc del dev {{ nic }} root;
+    tc qdisc del dev {{ nic }} root netem loss {{ nic_loss_percent }};
   become: true
