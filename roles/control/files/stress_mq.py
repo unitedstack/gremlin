@@ -52,7 +52,7 @@ def publish():
     channel.queue_bind(args.rabbit_queue, args.rabbit_exchange,
                        args.routing_key)
 
-    message = 'Gremlin Stress!'
+    message = 'Gremlin Coming!'
     count = 0
     while count < args.msg_per_thread:
         channel.basic_publish(exchange=args.rabbit_exchange,
