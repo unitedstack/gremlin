@@ -26,7 +26,7 @@
     sysbench --time={{ stress_mysql_time }} --threads={{ sysbench_threads }} --mysql-user={{ sysbench_user }}
     --mysql-password={{ sysbench_password }} --mysql-db={{ sysbench_database }} --mysql-host={{ stress_mysql_host}}
     --db-driver=mysql --table_size=500000
-    /usr/share/sysbench/oltp_read_write.lua prepare
+    /usr/share/sysbench/oltp_read_only.lua prepare
   delegate_to: localhost
   ignore_errors: true
 
@@ -35,7 +35,7 @@
     sysbench --time={{ stress_mysql_time }} --threads={{ sysbench_threads }} --mysql-user={{ sysbench_user }}
     --mysql-password={{ sysbench_password }} --mysql-db={{ sysbench_database }} --mysql-host={{ stress_mysql_host}}
     --db-driver=mysql --table_size=500000
-    /usr/share/sysbench/oltp_read_write.lua run
+    /usr/share/sysbench/oltp_read_only.lua run
   delegate_to: localhost
   ignore_errors: true
 
@@ -44,7 +44,7 @@
     sysbench --time={{ stress_mysql_time }} --threads={{ sysbench_threads }} --mysql-user={{ sysbench_user }}
     --mysql-password={{ sysbench_password }} --mysql-db={{ sysbench_database }} --mysql-host={{ stress_mysql_host}}
     --db-driver=mysql --table_size=500000
-    /usr/share/sysbench/oltp_read_write.lua cleanup
+    /usr/share/sysbench/oltp_read_only.lua cleanup
   delegate_to: localhost
   ignore_errors: true
 
