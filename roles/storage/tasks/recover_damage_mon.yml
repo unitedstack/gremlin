@@ -1,0 +1,5 @@
+- block:
+   - name: Recover ceph db file
+     shell: mv /tmp/CURRENT /var/lib/ceph/mon/{{ mon_name.stdout }}/store.db/ -f
+
+   - include: start_mon.yml

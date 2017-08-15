@@ -1,0 +1,12 @@
+- block:
+   - include: Stop_mon.yml
+
+   - name: Get mon name
+     shell: ls /var/lib/ceph/mon/
+     register: mon_name
+
+   - name: Backup ceph db file
+     shell: cp /var/lib/ceph/mon/{{ mon_name.stdout }}/store.db/CURRENT /tmp/
+
+   - name: Change ceph db file
+     shell: echo 0 > /var/lib/ceph/mon/{{ mon_name.stdout }}/store.db/CURRENT

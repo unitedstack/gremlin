@@ -54,6 +54,15 @@
     - mon-service
     - mon-down
 
+- include: mon/damage_mon.yml
+  vars:
+    random_hosts: random_one_mon_host
+  tags:
+    - service
+    - mon
+    - mon-service
+    - mon-down
+
 - include: mon/kill_mon.yml
   vars:
     random_hosts: random_two_mon_hosts

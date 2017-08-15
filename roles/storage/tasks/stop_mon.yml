@@ -1,0 +1,18 @@
+- block:
+   - name: "Stop ceph monitor"
+     shell: "systemctl stop ceph-mon@{{ ansible_hostname }}"
+
+   - name: "Stop Ceph Mon"
+     service:
+       name: "ceph-mon@{{ ansible_hostname }}"
+       state: stoped
+     become: true
+
+  rescue:
+   - shell: "/etc/init.d/ceph stop mon"
+     become: true
+
+  always:
+   - name: Waiting 10 seconds to warm up
+     pause:
+       seconds: 10
