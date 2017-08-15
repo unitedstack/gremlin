@@ -72,27 +72,31 @@ Now, following the steps to get started:
     You should define your inventory according your environments. Modify the
     inventory/hosts file.
 
-4. Run your test cases
+4. Define your configuration
 
-    4.1 Run all test cases automatically:
+    Edit the config.yml to fit your environments.
+
+5. Run your test cases
+
+    5.1 Run all test cases automatically:
 
     ```
     ./drill.sh -t all
     ```
 
-    4.2 Run all test cases manually:
+    5.2 Run all test cases manually:
 
     ```
     ./drill.sh -t all --mode manual
     ```
 
-    4.3 Run ceph mon down test cases manually
+    5.3 Run some specified test cases manually
 
     ```
-    ./drill.sh -t mon-pre,mon-down --moduel manual
+    ./drill.sh -t mon-pre,mon-down --mode manual
     ```
 
-5. To get more help info
+6. To get more help info
 
     ```
     ./drill.sh -h
