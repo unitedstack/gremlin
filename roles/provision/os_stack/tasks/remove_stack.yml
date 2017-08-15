@@ -1,0 +1,13 @@
+- shell: "heat --os-auth-url {{ os_auth_url }}
+               --os-region-name {{ os_region }}
+               --os-project-domain-name {{ os_project_domain_name }}
+               --os-project-name gremlin
+               --os-user-domain-name {{ os_user_domain_name }}
+               --os-username gremlin
+               --os-password {{ os_gremlin_password }}
+          stack-delete gremlin_{{ stack_name }}"
+
+- file:
+    path: "/tmp/grem_stack_template.yml"
+    state: absent
+

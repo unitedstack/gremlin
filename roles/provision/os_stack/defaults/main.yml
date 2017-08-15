@@ -1,0 +1,7 @@
+stack_template_path: stack-untitle.yml
+stack_name: untitle
+os_auth_url: 'http://127.0.0.1:5000/v3'
+os_region: RegionOne
+os_project_domain_name: Default
+os_user_domain_name: Default
+os_gremlin_password: drill@gremlin

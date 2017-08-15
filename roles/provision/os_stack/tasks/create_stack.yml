@@ -1,0 +1,15 @@
+- template:
+    src: "{{ stack_template_path }}"
+    dest: "/tmp/grem_stack_template.yml"
+    force: true
+    mode: 0644
+
+- shell: "heat --os-auth-url {{ os_auth_url }}
+               --os-region-name {{ os_region }}
+               --os-project-domain-name {{ os_project_domain_name }}
+               --os-project-name gremlin
+               --os-user-domain-name {{ os_user_domain_name }}
+               --os-username gremlin
+               --os-password {{ os_gremlin_password }}
+          stack-create --template-file /tmp/grem_stack_template.yml
+          gremlin_{{ stack_name }}"
