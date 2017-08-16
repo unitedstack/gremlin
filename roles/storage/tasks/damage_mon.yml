@@ -1,5 +1,5 @@
 - block:
-   - include: Stop_mon.yml
+   - include: stop_mon.yml
 
    - name: Get mon name
      shell: ls /var/lib/ceph/mon/
