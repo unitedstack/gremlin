@@ -1,0 +1,10 @@
+os_auth_url: 'http://127.0.0.1:5000/v3'
+os_project_domain_name: Default
+os_user_domain_name: Default
+
+os_admin_project: admin
+os_admin_username: admin
+os_admin_password: admin
+
+os_gremlin_password: drill@gremlin
+os_gremlin_role: member

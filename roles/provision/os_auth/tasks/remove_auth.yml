@@ -1,0 +1,41 @@
+- shell: "openstack --os-auth-url {{ os_auth_url }}
+                    --os-identity-api-version 3
+                    --os-project-domain-name {{ os_project_domain_name }}
+                    --os-project-name {{ os_admin_project }}
+                    --os-user-domain-name {{ os_user_domain_name }}
+                    --os-username {{ os_admin_username }}
+                    --os-password {{ os_admin_password }}
+          user show gremlin"
+  register: os_user_show
+  ignore_errors: true
+
+- shell: "openstack --os-auth-url {{ os_auth_url }}
+                    --os-identity-api-version 3
+                    --os-project-domain-name {{ os_project_domain_name }}
+                    --os-project-name {{ os_admin_project }}
+                    --os-user-domain-name {{ os_user_domain_name }}
+                    --os-username {{ os_admin_username }}
+                    --os-password {{ os_admin_password }}
+          user delete gremlin"
+  when: os_user_show.rc == 0
+
+- shell: "openstack --os-auth-url {{ os_auth_url }}
+                    --os-identity-api-version 3
+                    --os-project-domain-name {{ os_project_domain_name }}
+                    --os-project-name {{ os_admin_project }}
+                    --os-user-domain-name {{ os_user_domain_name }}
+                    --os-username {{ os_admin_username }}
+                    --os-password {{ os_admin_password }}
+          project show gremlin"
+  register: os_project_show
+  ignore_errors: true
+
+- shell: "openstack --os-auth-url {{ os_auth_url }}
+                    --os-identity-api-version 3
+                    --os-project-domain-name {{ os_project_domain_name }}
+                    --os-project-name {{ os_admin_project }}
+                    --os-user-domain-name {{ os_user_domain_name }}
+                    --os-username {{ os_admin_username }}
+                    --os-password {{ os_admin_password }}
+          project delete gremlin"
+  when: os_project_show.rc == 0

@@ -1,0 +1,7 @@
+- name: Create Auth
+  hosts: "{{ api_host }}"
+  gather_facts: false
+  tasks:
+    - include_role:
+        name: provision/os_auth
+        tasks_from: create_auth
