@@ -1,0 +1,39 @@
+- include: ../../common/next.yml
+  vars:
+    case_name: "CASE: Storage - Ceph OSD partition-table delete on {{ random_hosts }}"
+
+- name: "Drill the case"
+  hosts: "{{ random_hosts }}"
+  gather_facts: true
+  vars:
+    execute: "{{ hostvars['localhost']['execute'] }}"
+  tasks:
+    - block:
+      - include_role:
+          name: storage
+          tasks_from: kill_osd
+      - include_role:
+          name: storage
+          tasks_from: del_osd_partition  
+      when:
+        - execute == "y" or execute == true
+
+- include: ../../common/ask.yml
+
+- name: "Recover the fault"
+  hosts: "{{ random_hosts }}"
+  gather_facts: true
+  vars:
+    execute: "{{ hostvars['localhost']['execute'] }}"
+    recovery: "{{ hostvars['localhost']['recovery'] }}"
+  tasks:
+    - block:
+      - include_role:
+          name: storage
+          tasks_from: recover_osd_partition
+      - include_role:
+          name: storage
+          tasks_from: start_osd
+      when:
+        - mode == "auto" or recovery == "y" or recovery == true
+        - execute == "y" or execute == true

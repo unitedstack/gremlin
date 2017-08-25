@@ -1,0 +1,52 @@
+- block:
+  - name: Get the OSD Disk
+    shell: "df -h |grep ceph-{{ item }} |awk '{print $1}'|sed 's/[0-9]//g'"
+    register: ceph_osd_disk
+    become: true
+    with_items:
+      - "{{ osd_down_list }}"
+  
+  - name: Get the OSD Disk Partition
+    shell: "df -h |grep ceph-{{ item }} |awk '{print $1}'"
+    register: ceph_osd_disk_part
+    become: true
+    with_items:
+      - "{{ osd_down_list }}"
+
+  - name: Backup Ceph OSD Partition
+    shell: "sgdisk {{ item[1].stdout }} -b /tmp/osd_{{ item[0] }}_partition.bak"
+    become: true
+    register: backup_result
+    ignore_errors: false
+    failed_when: " 'successfully' not in backup_result.stdout"
+    with_nested:
+      - "{{ osd_down_list }}"
+      - "{{ ceph_osd_disk.results }}"
+
+  - name: Del OSD Partition Table
+    command: "sgdisk -o {{ item.stdout }}"
+    become: true
+    register: del_result
+    failed_when: " 'successfully' not in del_result.stdout"
+    with_items:
+      - "{{ ceph_osd_disk.results }}"
+
+  - name: Umount Ceph OSD Disk
+    shell: "umount /var/lib/ceph/osd/ceph-{{ item }}"
+    become: true
+    with_items:
+      - "{{ osd_down_list }}"
+    
+  - name: Check OSD Umount Result
+    shell: "df -h |grep ceph-{{ item }}"
+    register: umount_result
+    become: true
+    failed_when: " 'ceph-' in umount_result.stdout"
+    with_items:
+      - "{{ osd_down_list }}"
+
+  always:
+   - name: Waiting 10 seconds to warm down
+     pause:
+       seconds: 10
+

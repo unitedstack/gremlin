@@ -1,0 +1,31 @@
+- block:
+   - name: Recover Ceph OSD Partition 
+     command: "sgdisk --load-backup /tmp/osd_{{ item[0] }}_partition.bak {{ item[1].stdout }}"
+     register: recover_result
+     become: true
+     failed_when: " 'successfully' not in recover_result.stdout"
+     with_nested:
+       - "{{ osd_down_list }}"
+       - "{{ ceph_osd_disk.results }}"
+     when: "ceph_osd_disk is defined"
+
+   - name: Mount Ceph OSD Disk
+     shell: "mount {{ item[1].stdout }} /var/lib/ceph/osd/ceph-{{ item[0] }} "
+     become: true
+     with_nested:
+       - "{{ osd_down_list }}"
+       - "{{ ceph_osd_disk_part.results }}"
+     when: "ceph_osd_disk_part is defined"
+
+   - name: Check OSD Mount Result
+     shell: "df -h |grep ceph-{{ item }}"
+     register: check_result
+     become: true
+     failed_when: " 'ceph-' not in check_result.stdout"
+     with_items:
+       - "{{ osd_down_list }}"
+
+  always:
+   - name: Waiting 10 seconds to warm up
+     pause:
+       seconds: 10

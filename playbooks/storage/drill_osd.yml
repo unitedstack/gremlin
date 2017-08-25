@@ -168,3 +168,13 @@
     - osd
     - osd-service
     - osd-down
+
+- include: osd/del_osd_partition.yml
+  vars:
+    random_hosts: one_osd_pg_hosts
+    osd_down_list: "{{ one_osd_pg_list }}"
+  tags:
+    - service
+    - osd
+    - osd-service
+    - osd-partition-del
