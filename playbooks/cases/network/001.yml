@@ -1,0 +1,7 @@
+- name: "Network Case 001: Router unavailable when host in neutron changed"
+  hosts: networker
+  gather_facts: false
+  tasks:
+    - name: Test
+      debug:
+          msg: "The case 001 is executing"

@@ -1,0 +1,47 @@
+# This is the entry point of case, you can specify the
+# case number to be executed.
+
+# The case number will be prefixed with the following short name:
+
+# ctl: stands for control services releated case
+# com: stands for compute services releated case
+# net: stands for network services releated case
+# sto: stands for storage services releated case
+# sys: stands for system services releated case
+
+- name: Parse the case number to playbook path
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Parse cid to get case and id
+      set_fact:
+        case: "{{ case_prefix_map[cid.split('-')[0]] }}"
+        id: "{{ cid.split('-')[1] }}"
+      when:
+        - cid.split('-') | length == 2
+
+    - name: Validate CID
+      fail:
+        msg: "Wrong cid: {{ cid }}, the cid format should be like: net-001"
+      when:
+        - case is not defined or id is not defined
+
+    - name: Generate case path
+      set_fact:
+        case_path: "cases/{{ case }}/{{ id }}.yml"
+
+    - name: Check if case palybook is existed
+      stat:
+        path: "{{ case_path }}"
+      register: state_result
+
+    - name: Exit if cast path does not exist
+      fail:
+        msg: "The case {{ case_path }} does not exist, please check it"
+      when:
+        - state_result.stat.exists == false
+
+    - name: Print the case path
+      debug:
+          msg: The {{ case_path }} will be executed

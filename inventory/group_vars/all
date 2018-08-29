@@ -18,3 +18,10 @@ physical_network_bridge_port: eth0
 
 external_network_bridge: br-ex
 external_network_bridge_port: eth0
+
+case_prefix_map:
+  ctl: control
+  com: compute
+  net: network
+  sto: storage
+  sys: system
